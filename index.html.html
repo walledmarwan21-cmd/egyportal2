@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Egypt E-Portal — Egyptian Government Digital Services</title>
+<meta name="description" content="The official Egyptian Government E-Portal. Apply for IDs, passports, licenses, certificates and more — fully online, 24/7." />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cairo:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#667eea; --primary-2:#764ba2;
+    --grad:linear-gradient(135deg,#667eea,#764ba2);
+    --dark:#1a1a2e; --bg:#f0f2f5;
+    --success:#10b981; --warning:#f59e0b; --danger:#ef4444;
+    --shadow:0 10px 30px rgba(20,20,50,.08);
+    --shadow-lg:0 20px 50px rgba(20,20,50,.15);
+    --card:#fff; --text:#1f2937; --muted:#6b7280; --border:#e5e7eb;
+  }
+  body.dark{
+    --bg:#0f0f1e; --card:#1a1a2e; --text:#e5e7eb; --muted:#9ca3af; --border:#2a2a44;
+    --shadow:0 10px 30px rgba(0,0,0,.4);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;cursor:none;transition:background .3s,color .3s}
+  body[dir="rtl"]{font-family:'Cairo','Tajawal',sans-serif}
+  a{text-decoration:none;color:inherit}
+  #scrollProgress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--grad);z-index:9999;transition:width .1s}
+  .cursor{position:fixed;width:30px;height:30px;border-radius:50%;background:rgba(102,126,234,.35);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .15s ease, background .2s;mix-blend-mode:multiply}
+  .cursor.hover{transform:translate(-50%,-50%) scale(1.8);background:rgba(118,75,162,.4)}
+  @media(max-width:768px){body{cursor:auto}.cursor{display:none}}
+  #preloader{position:fixed;inset:0;background:var(--dark);display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:10000;transition:opacity .5s}
+  #preloader.hide{opacity:0;pointer-events:none}
+  .pre-logo{width:90px;height:90px;border-radius:24px;background:var(--grad);display:grid;place-items:center;color:#fff;font-size:38px;animation:pulse 1.2s ease-in-out infinite}
+  .pre-bar{margin-top:24px;width:240px;height:4px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden}
+  .pre-bar span{display:block;height:100%;width:0;background:var(--grad);animation:load 1.5s ease forwards}
+  .pre-text{color:#fff;margin-top:14px;font-weight:600;letter-spacing:.4px}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+  @keyframes load{to{width:100%}}
+
+  .navbar{background:var(--dark);padding:14px 0;box-shadow:0 2px 20px rgba(0,0,0,.2)}
+  .navbar .navbar-brand{color:#fff;font-weight:800;font-size:1.4rem;display:flex;align-items:center;gap:10px}
+  .brand-mark{width:38px;height:38px;border-radius:10px;background:var(--grad);display:grid;place-items:center;color:#fff}
+  .navbar .nav-link{color:#cbd1e2 !important;font-weight:500;margin:0 4px;border-radius:8px;padding:8px 14px !important;transition:.25s;cursor:pointer}
+  .navbar .nav-link:hover,.navbar .nav-link.active{background:rgba(102,126,234,.2);color:#fff !important}
+  .btn-grad{background:var(--grad);color:#fff;border:none;padding:10px 22px;border-radius:10px;font-weight:600;transition:.25s;box-shadow:0 8px 20px rgba(102,126,234,.35)}
+  .btn-grad:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(118,75,162,.45);color:#fff}
+  .btn-outline-light-2{border:1.5px solid rgba(255,255,255,.3);color:#fff;background:transparent;padding:10px 22px;border-radius:10px;font-weight:600;transition:.25s}
+  .btn-outline-light-2:hover{background:rgba(255,255,255,.1);color:#fff}
+  .navbar-toggler{border-color:rgba(255,255,255,.2)}
+  .navbar-toggler-icon{filter:invert(1)}
+  .lang-btn,.dark-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;padding:8px 12px;border-radius:8px;font-weight:600;font-size:.85rem;transition:.25s;cursor:pointer}
+  .lang-btn:hover,.dark-btn:hover{background:rgba(255,255,255,.18)}
+  .lang-menu{background:var(--dark);border:1px solid rgba(255,255,255,.1)}
+  .lang-menu .dropdown-item{color:#cbd1e2}
+  .lang-menu .dropdown-item:hover{background:rgba(102,126,234,.2);color:#fff}
+
+  .page{display:none;animation:fade .5s ease}
+  .page.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:none}}
+  .hero{background:var(--dark);color:#fff;padding:90px 0 70px;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(102,126,234,.35),transparent 70%);top:-200px;right:-150px;border-radius:50%}
+  .hero::after{content:"";position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(118,75,162,.3),transparent 70%);bottom:-200px;left:-100px;border-radius:50%}
+  .hero h1{font-size:3.4rem;font-weight:800;line-height:1.15;margin-bottom:18px;position:relative}
+  .grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p.lead{color:#cbd1e2;font-size:1.15rem;max-width:680px;margin:0 auto 30px;position:relative}
+  .hero-ctas{position:relative;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .stats{margin-top:60px;position:relative}
+  .stat-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:26px;text-align:center;transition:.3s;backdrop-filter:blur(8px)}
+  .stat-card:hover{transform:translateY(-6px);background:rgba(255,255,255,.08);border-color:rgba(102,126,234,.4)}
+  .stat-card .icon{width:56px;height:56px;border-radius:14px;background:var(--grad);display:grid;place-items:center;margin:0 auto 14px;color:#fff;font-size:22px}
+  .stat-card .num{font-size:2rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat-card .lbl{color:#cbd1e2;font-size:.95rem;margin-top:4px}
+
+  section.block{padding:80px 0}
+  .section-title{text-align:center;margin-bottom:50px}
+  .section-title h2{font-size:2.4rem;font-weight:800;margin-bottom:10px}
+  .section-title p{color:var(--muted);max-width:640px;margin:0 auto}
+  .feature-card{background:var(--card);border-radius:18px;padding:30px;box-shadow:var(--shadow);transition:.3s;height:100%;border:1px solid var(--border)}
+  .feature-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg)}
+  .feature-card .ic{width:60px;height:60px;border-radius:14px;background:var(--grad);display:grid;place-items:center;color:#fff;font-size:24px;margin-bottom:18px}
+  .feature-card h4{font-weight:700;margin-bottom:10px}
+  .feature-card p{color:var(--muted);margin:0}
+  .page-header{background:var(--grad);color:#fff;padding:70px 0 60px;text-align:center;position:relative;overflow:hidden}
+  .page-header h1{font-size:2.6rem;font-weight:800}
+  .page-header p{opacity:.9;max-width:640px;margin:14px auto 0}
+
+  .filters{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:24px 0 30px}
+  .chip{padding:9px 18px;border-radius:99px;background:var(--card);border:1.5px solid var(--border);font-weight:500;cursor:pointer;transition:.25s;font-size:.9rem;color:var(--muted)}
+  .chip:hover{border-color:var(--primary);color:var(--primary)}
+  .chip.active{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 6px 16px rgba(102,126,234,.35)}
+  .search-wrap{max-width:560px;margin:0 auto;position:relative}
+  .search-wrap input{width:100%;padding:14px 22px 14px 48px;border-radius:14px;border:1.5px solid var(--border);font-size:1rem;outline:none;transition:.25s;background:var(--card);color:var(--text)}
+  body[dir="rtl"] .search-wrap input{padding:14px 48px 14px 22px}
+  .search-wrap input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(102,126,234,.15)}
+  .search-wrap i{position:absolute;left:18px;top:50%;transform:translateY(-50%);color:#9ca3af}
+  body[dir="rtl"] .search-wrap i{left:auto;right:18px}
+  .service-card{background:var(--card);border-radius:18px;padding:24px;box-shadow:var(--shadow);transition:.3s;cursor:pointer;height:100%;border:1px solid var(--border);display:flex;flex-direction:column}
+  .service-card:hover{transform:translateY(-6px) scale(1.01);box-shadow:var(--shadow-lg)}
+  .service-card .ic{width:54px;height:54px;border-radius:13px;background:var(--grad);display:grid;place-items:center;color:#fff;font-size:22px;margin-bottom:14px}
+  .service-card h5{font-weight:700;margin-bottom:8px}
+  .service-card p{color:var(--muted);font-size:.92rem;margin-bottom:14px;flex:1}
+  .service-meta{display:flex;justify-content:space-between;align-items:center;margin-top:auto;gap:8px;flex-wrap:wrap}
+  .badge-fee{background:rgba(16,185,129,.12);color:var(--success);font-weight:600;padding:6px 12px;border-radius:99px;font-size:.8rem}
+  .badge-fee.free{background:rgba(102,126,234,.12);color:var(--primary)}
+  .badge-time{background:rgba(0,0,0,.05);color:var(--muted);padding:6px 12px;border-radius:99px;font-size:.8rem;font-weight:500}
+  body.dark .badge-time{background:rgba(255,255,255,.05)}
+
+  .modal-content{border:none;border-radius:20px;overflow:hidden;box-shadow:var(--shadow-lg);background:var(--card);color:var(--text)}
+  .modal-header{background:var(--grad);color:#fff;border:none;padding:22px 26px}
+  .modal-header .btn-close{filter:invert(1) brightness(2)}
+  .modal-body{padding:26px}
+  .modal.fade .modal-dialog{transform:translateY(40px) scale(.95);transition:.35s cubic-bezier(.2,.9,.3,1.2)}
+  .modal.show .modal-dialog{transform:none}
+  .req-list li{padding:8px 0;color:var(--text);display:flex;gap:10px;align-items:flex-start}
+  .req-list li i{color:var(--success);margin-top:4px}
+  .req-list{list-style:none;padding:0;margin:0}
+  .branch{background:rgba(102,126,234,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px;border-left:4px solid var(--primary)}
+  body[dir="rtl"] .branch{border-left:none;border-right:4px solid var(--primary)}
+  .branch h6{margin:0 0 4px;font-weight:700}
+  .branch small{color:var(--muted);display:block}
+  .upload-area{border:2px dashed #cbd5e1;border-radius:14px;padding:30px;text-align:center;cursor:pointer;transition:.25s;background:rgba(102,126,234,.04)}
+  .upload-area:hover{border-color:var(--primary);background:rgba(102,126,234,.08)}
+  .upload-area i{font-size:36px;color:var(--primary);margin-bottom:10px}
+  .file-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-top:8px;display:flex;justify-content:space-between;align-items:center;font-size:.9rem}
+
+  .gs-list li{padding:10px 0;display:flex;gap:12px;align-items:flex-start;color:var(--text)}
+  .gs-list li i{color:var(--success);font-size:18px;margin-top:3px}
+  .gs-list{list-style:none;padding:0}
+  .accordion-item{border:1px solid var(--border);border-radius:14px !important;overflow:hidden;margin-bottom:12px;background:var(--card)}
+  .accordion-button{font-weight:600;padding:18px 22px;background:var(--card);color:var(--text)}
+  .accordion-button:not(.collapsed){background:rgba(102,126,234,.08);color:var(--primary-2);box-shadow:none}
+  .accordion-button:focus{box-shadow:none;border-color:var(--primary)}
+  .accordion-body{color:var(--muted)}
+  .contact-info{background:var(--grad);color:#fff;padding:36px;border-radius:20px;height:100%}
+  .contact-info .item{display:flex;gap:14px;margin-bottom:22px;align-items:flex-start}
+  .contact-info .item i{width:42px;height:42px;border-radius:10px;background:rgba(255,255,255,.15);display:grid;place-items:center;flex-shrink:0}
+  .contact-info h6{margin:0 0 4px;font-weight:600;opacity:.85;font-size:.85rem;text-transform:uppercase;letter-spacing:.5px}
+  .contact-info p{margin:0;font-weight:500}
+  .form-control,.form-select{border-radius:10px;border:1.5px solid var(--border);padding:12px 14px;background:var(--card);color:var(--text)}
+  .form-control:focus,.form-select:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(102,126,234,.15);background:var(--card);color:var(--text)}
+
+  footer{background:var(--dark);color:#cbd1e2;padding:56px 0 24px;margin-top:60px}
+  footer h6{color:#fff;font-weight:700;margin-bottom:18px;text-transform:uppercase;font-size:.9rem;letter-spacing:.5px}
+  footer a{color:#cbd1e2;display:block;padding:6px 0;transition:.2s;cursor:pointer}
+  footer a:hover{color:#fff;transform:translateX(4px)}
+  body[dir="rtl"] footer a:hover{transform:translateX(-4px)}
+  .social a{display:inline-grid;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.08);place-items:center;margin-right:8px;transition:.3s}
+  .social a:hover{background:var(--grad);transform:rotate(360deg)}
+  .copyright{border-top:1px solid rgba(255,255,255,.08);margin-top:36px;padding-top:18px;text-align:center;font-size:.9rem;color:#9ca3af}
+  #scrollTop{position:fixed;bottom:30px;right:30px;width:50px;height:50px;border-radius:50%;background:var(--grad);color:#fff;border:none;display:none;place-items:center;font-size:18px;box-shadow:var(--shadow-lg);z-index:999;transition:.3s}
+  body[dir="rtl"] #scrollTop{right:auto;left:30px}
+  #scrollTop.show{display:grid}
+  #scrollTop:hover{transform:translateY(-4px)}
+  .toast-stack{position:fixed;top:90px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;max-width:340px}
+  body[dir="rtl"] .toast-stack{right:auto;left:24px}
+  .toast-item{background:var(--card);color:var(--text);border-left:4px solid var(--primary);border-radius:12px;padding:14px 18px;box-shadow:var(--shadow-lg);animation:slideIn .3s ease;display:flex;gap:12px;align-items:flex-start}
+  .toast-item.success{border-color:var(--success)} .toast-item.warning{border-color:var(--warning)} .toast-item.danger{border-color:var(--danger)}
+  .toast-item i{font-size:20px}
+  .toast-item.success i{color:var(--success)} .toast-item.warning i{color:var(--warning)} .toast-item.danger i{color:var(--danger)} .toast-item i{color:var(--primary)}
+  @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:none;opacity:1}}
+
+  .stat-mini{background:var(--card);border-radius:16px;padding:22px;box-shadow:var(--shadow);display:flex;align-items:center;gap:16px;border:1px solid var(--border);transition:.25s}
+  .stat-mini:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+  .stat-mini .ic{width:54px;height:54px;border-radius:13px;background:var(--grad);display:grid;place-items:center;color:#fff;font-size:22px;flex-shrink:0}
+  .stat-mini h3{margin:0;font-weight:800;font-size:1.5rem}
+  .stat-mini small{color:var(--muted)}
+  .table{color:var(--text)}
+  .table thead{background:rgba(102,126,234,.08)}
+  .table>:not(caption)>*>*{background:transparent;color:var(--text)}
+  .status-badge{padding:5px 12px;border-radius:99px;font-size:.78rem;font-weight:600;text-transform:capitalize}
+  .status-pending{background:rgba(245,158,11,.15);color:var(--warning)}
+  .status-approved{background:rgba(16,185,129,.15);color:var(--success)}
+  .status-rejected{background:rgba(239,68,68,.15);color:var(--danger)}
+  .nav-tabs{border-bottom:1px solid var(--border)}
+  .nav-tabs .nav-link{border:none;color:var(--muted);font-weight:600;padding:12px 22px;border-radius:10px 10px 0 0;cursor:pointer}
+  .nav-tabs .nav-link.active{color:var(--primary-2);background:var(--card);border-bottom:3px solid var(--primary)}
+
+  .ripple{position:relative;overflow:hidden}
+  .ripple span.r{position:absolute;border-radius:50%;background:rgba(255,255,255,.5);transform:scale(0);animation:rip .6s linear;pointer-events:none}
+  @keyframes rip{to{transform:scale(4);opacity:0}}
+  .demo-cred{background:rgba(102,126,234,.08);border:1px dashed var(--primary);border-radius:12px;padding:12px 14px;margin-top:14px;font-size:.85rem;color:var(--muted)}
+
+  /* Charts */
+  .chart-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--shadow);height:100%}
+  .chart-card h5{font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+  .chart-card h5 i{color:var(--primary)}
+  .chart-wrap{position:relative;height:280px}
+  .insight{background:linear-gradient(135deg,rgba(102,126,234,.1),rgba(118,75,162,.06));border-left:4px solid var(--primary);border-radius:12px;padding:14px 18px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start}
+  body[dir="rtl"] .insight{border-left:none;border-right:4px solid var(--primary)}
+  .insight i{color:var(--primary);font-size:20px;margin-top:2px}
+  .insight strong{color:var(--primary-2)}
+
+  /* Skeleton */
+  .skeleton{background:linear-gradient(90deg,rgba(0,0,0,.06),rgba(0,0,0,.12),rgba(0,0,0,.06));background-size:200% 100%;animation:sk 1.4s infinite;border-radius:12px}
+  body.dark .skeleton{background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.12),rgba(255,255,255,.06));background-size:200% 100%}
+  @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+  /* Timeline */
+  .timeline{display:flex;justify-content:space-between;position:relative;margin:30px 0;padding:0 20px}
+  .timeline::before{content:"";position:absolute;top:24px;left:40px;right:40px;height:3px;background:var(--border);z-index:0}
+  .tl-step{position:relative;z-index:1;text-align:center;flex:1}
+  .tl-dot{width:48px;height:48px;border-radius:50%;background:var(--card);border:3px solid var(--border);display:grid;place-items:center;margin:0 auto 10px;color:var(--muted);font-size:18px;transition:.3s}
+  .tl-step.done .tl-dot{background:var(--grad);border-color:transparent;color:#fff;animation:pop .5s ease}
+  .tl-step.current .tl-dot{background:var(--warning);border-color:var(--warning);color:#fff;animation:pulse 1.5s infinite}
+  .tl-step.rejected .tl-dot{background:var(--danger);border-color:var(--danger);color:#fff}
+  .tl-label{font-size:.85rem;font-weight:600;color:var(--muted)}
+  .tl-step.done .tl-label,.tl-step.current .tl-label,.tl-step.rejected .tl-label{color:var(--text)}
+  @keyframes pop{0%{transform:scale(.5)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+
+  /* QR */
+  .qr-wrap{background:#fff;padding:20px;border-radius:16px;display:inline-block;box-shadow:var(--shadow)}
+  .receipt{background:var(--card);border:2px dashed var(--border);border-radius:16px;padding:24px;color:var(--text)}
+  .receipt h5{font-weight:800;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+  .receipt .row-line{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--border)}
+  .receipt .row-line span:first-child{color:var(--muted)}
+  .receipt .row-line span:last-child{font-weight:600}
+
+  /* Filter pills (analytics) */
+  .pill-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+  .pill{padding:7px 14px;border-radius:99px;background:var(--card);border:1px solid var(--border);font-size:.85rem;font-weight:600;cursor:pointer;color:var(--muted);transition:.2s}
+  .pill.active{background:var(--grad);color:#fff;border-color:transparent}
+
+  @media(max-width:768px){
+    .hero h1{font-size:2.2rem}
+    .section-title h2{font-size:1.8rem}
+    .page-header h1{font-size:1.9rem}
+    .timeline{padding:0;flex-wrap:wrap}
+    .timeline::before{display:none}
+    .tl-step{min-width:50%;margin-bottom:14px}
+  }
+</style>
+</head>
+<body>
+
+<div id="preloader">
+  <div class="pre-logo"><i class="fas fa-landmark"></i></div>
+  <div class="pre-text">Egypt E-Portal</div>
+  <div class="pre-bar"><span></span></div>
+</div>
+
+<div id="scrollProgress"></div>
+<div class="cursor" id="cursor"></div>
+<div class="toast-stack" id="toastStack"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg sticky-top">
+  <div class="container">
+    <a class="navbar-brand" data-page="home">
+      <span class="brand-mark"><i class="fas fa-landmark"></i></span>
+      <span data-i18n="brand">Egypt E-Portal</span>
+    </a>
+    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav ms-auto align-items-lg-center" id="navLinks">
+        <li class="nav-item"><a class="nav-link active" data-page="home" data-i18n="nav.home">Home</a></li>
+        <li class="nav-item"><a class="nav-link" data-page="services" data-i18n="nav.services">Services</a></li>
+        <li class="nav-item"><a class="nav-link" data-page="track" data-i18n="nav.track">Track</a></li>
+        <li class="nav-item"><a class="nav-link" data-page="getstarted" data-i18n="nav.getstarted">Get Started</a></li>
+        <li class="nav-item"><a class="nav-link" data-page="about" data-i18n="nav.about">About</a></li>
+        <li class="nav-item"><a class="nav-link" data-page="faq" data-i18n="nav.faq">FAQ</a></li>
+        <li class="nav-item"><a class="nav-link" data-page="contact" data-i18n="nav.contact">Contact</a></li>
+        <li class="nav-item d-none" id="navDashboard"><a class="nav-link" data-page="dashboard"><i class="fas fa-gauge me-1"></i><span data-i18n="nav.dashboard">Dashboard</span></a></li>
+        <li class="nav-item ms-lg-2 mt-2 mt-lg-0 dropdown">
+          <button class="lang-btn dropdown-toggle" data-bs-toggle="dropdown"><i class="fas fa-globe me-1"></i><span id="curLang">EN</span></button>
+          <ul class="dropdown-menu lang-menu dropdown-menu-end">
+            <li><a class="dropdown-item" onclick="setLang('en')">🇺🇸 English</a></li>
+            <li><a class="dropdown-item" onclick="setLang('ar')">🇪🇬 العربية</a></li>
+          </ul>
+        </li>
+        <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+          <button class="dark-btn" id="darkBtn" title="Toggle theme"><i class="fas fa-moon"></i></button>
+        </li>
+        <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+          <button class="btn btn-grad ripple" id="authBtn" data-bs-toggle="modal" data-bs-target="#authModal"><i class="fas fa-user me-1"></i> <span data-i18n="nav.login">Login</span></button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main id="pages">
+
+<!-- HOME -->
+<section class="page active" data-page="home">
+  <div class="hero">
+    <div class="container text-center">
+      <h1><span data-i18n="hero.welcome">Welcome to the</span> <span class="grad-text" data-i18n="hero.title">Egyptian Government E-Portal</span></h1>
+      <p class="lead" data-i18n="hero.lead">Access 150+ official digital services from the Egyptian Government — anytime, anywhere. Secure, fast, and built for every citizen.</p>
+      <div class="hero-ctas">
+        <button class="btn btn-grad ripple btn-lg" data-page="getstarted"><i class="fas fa-rocket me-2"></i><span data-i18n="hero.cta1">Get Started</span></button>
+        <button class="btn btn-outline-light-2 ripple btn-lg" data-page="services"><i class="fas fa-th-large me-2"></i><span data-i18n="hero.cta2">Explore Services</span></button>
+      </div>
+      <div class="row g-4 stats" id="statsRow">
+        <div class="col-md-3 col-6"><div class="stat-card"><div class="icon"><i class="fas fa-users"></i></div><div class="num counter" data-target="5000000" data-suffix="+">0</div><div class="lbl" data-i18n="stats.citizens">Citizens Served</div></div></div>
+        <div class="col-md-3 col-6"><div class="stat-card"><div class="icon"><i class="fas fa-th"></i></div><div class="num counter" data-target="150" data-suffix="+">0</div><div class="lbl" data-i18n="stats.services">Digital Services</div></div></div>
+        <div class="col-md-3 col-6"><div class="stat-card"><div class="icon"><i class="fas fa-clock"></i></div><div class="num">24/7</div><div class="lbl" data-i18n="stats.avail">Availability</div></div></div>
+        <div class="col-md-3 col-6"><div class="stat-card"><div class="icon"><i class="fas fa-shield-halved"></i></div><div class="num counter" data-target="100" data-suffix="%">0</div><div class="lbl" data-i18n="stats.secure">Secure</div></div></div>
+      </div>
+    </div>
+  </div>
+  <section class="block">
+    <div class="container">
+      <div class="section-title"><h2><span data-i18n="why.title">Why Choose</span> <span class="grad-text" data-i18n="brand">Egypt E-Portal</span>?</h2><p data-i18n="why.sub">A unified platform connecting every Egyptian citizen with the services they need — without the queues, the paperwork, or the wait.</p></div>
+      <div class="row g-4">
+        <div class="col-md-4"><div class="feature-card"><div class="ic"><i class="fas fa-bullseye"></i></div><h4 data-i18n="why.mission">Our Mission</h4><p data-i18n="why.mission_d">Empower every citizen with effortless access to government services through trusted, modern digital infrastructure.</p></div></div>
+        <div class="col-md-4"><div class="feature-card"><div class="ic"><i class="fas fa-eye"></i></div><h4 data-i18n="why.vision">Our Vision</h4><p data-i18n="why.vision_d">A fully digital Egypt where bureaucracy never stands between people and the services they deserve.</p></div></div>
+        <div class="col-md-4"><div class="feature-card"><div class="ic"><i class="fas fa-handshake"></i></div><h4 data-i18n="why.values">Our Values</h4><p data-i18n="why.values_d">Transparency, integrity, accessibility, and innovation — guiding every line of code and every service we deliver.</p></div></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- SERVICES -->
+<section class="page" data-page="services">
+  <div class="page-header"><div class="container"><h1 data-i18n="srv.title">Explore Government Services</h1><p data-i18n="srv.sub">Browse 150+ official services. Search, filter, and apply in minutes.</p></div></div>
+  <section class="block">
+    <div class="container">
+      <div class="search-wrap"><i class="fas fa-search"></i><input id="searchInput" data-i18n-ph="srv.search" placeholder="Search services..."></div>
+      <div class="filters" id="filters"></div>
+      <div class="row g-4" id="servicesGrid"></div>
+    </div>
+  </section>
+</section>
+
+<!-- TRACK -->
+<section class="page" data-page="track">
+  <div class="page-header"><div class="container"><h1 data-i18n="track.title">Track Your Application</h1><p data-i18n="track.sub">Enter your Application ID or National ID, or scan the QR code on your receipt.</p></div></div>
+  <section class="block">
+    <div class="container" style="max-width:900px">
+      <div class="feature-card mb-4">
+        <div class="row g-3 align-items-end">
+          <div class="col-md-8"><label class="form-label fw-semibold" data-i18n="track.label">Application ID or National ID</label><input class="form-control" id="trackInput" placeholder="APP-2026-000123 or 14-digit ID"></div>
+          <div class="col-md-4"><button class="btn btn-grad w-100 ripple" onclick="doTrack()"><i class="fas fa-magnifying-glass me-2"></i><span data-i18n="track.btn">Track</span></button></div>
+        </div>
+        <div class="mt-3 text-center text-muted small"><i class="fas fa-qrcode me-1"></i> <span data-i18n="track.scan">Or scan a QR code from your receipt to auto-load your application.</span></div>
+      </div>
+      <div id="trackResult"></div>
+    </div>
+  </section>
+</section>
+
+<!-- GET STARTED -->
+<section class="page" data-page="getstarted">
+  <div class="page-header"><div class="container"><h1 data-i18n="gs.title">Get Started in Minutes</h1><p data-i18n="gs.sub">Your gateway to a fully digital relationship with your government.</p></div></div>
+  <section class="block">
+    <div class="container">
+      <div class="row g-5 align-items-start">
+        <div class="col-lg-7">
+          <h2 class="fw-bold mb-3"><span data-i18n="gs.welcome">Welcome to</span> <span class="grad-text" data-i18n="brand">Egypt E-Portal</span></h2>
+          <p class="text-muted mb-4" data-i18n="gs.welcome_d">Create your free account and unlock instant access to every government service from your phone or laptop.</p>
+          <div class="row g-3">
+            <div class="col-md-6"><div class="feature-card"><div class="ic"><i class="fas fa-clock-rotate-left"></i></div><h4 data-i18n="gs.f1">24/7 Access</h4><p data-i18n="gs.f1d">Apply for services any time of day, any day of the week.</p></div></div>
+            <div class="col-md-6"><div class="feature-card"><div class="ic"><i class="fas fa-lock"></i></div><h4 data-i18n="gs.f2">Secure Platform</h4><p data-i18n="gs.f2d">Bank-grade encryption protecting every interaction and document.</p></div></div>
+            <div class="col-md-6"><div class="feature-card"><div class="ic"><i class="fas fa-mobile-screen"></i></div><h4 data-i18n="gs.f3">Mobile Friendly</h4><p data-i18n="gs.f3d">Designed for every screen — phone, tablet, or desktop.</p></div></div>
+            <div class="col-md-6"><div class="feature-card"><div class="ic"><i class="fas fa-headset"></i></div><h4 data-i18n="gs.f4">24/7 Support</h4><p data-i18n="gs.f4d">Our support team is always ready to help — call 16537 anytime.</p></div></div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="feature-card">
+            <h3 class="fw-bold mb-3" data-i18n="gs.why">Why Choose Us?</h3>
+            <ul class="gs-list">
+              <li><i class="fas fa-check-circle"></i> <span data-i18n="gs.b1">Skip the lines — apply online in minutes.</span></li>
+              <li><i class="fas fa-check-circle"></i> <span data-i18n="gs.b2">Track every request in real time.</span></li>
+              <li><i class="fas fa-check-circle"></i> <span data-i18n="gs.b3">Pay securely with multiple payment options.</span></li>
+              <li><i class="fas fa-check-circle"></i> <span data-i18n="gs.b4">Receive digital documents directly to your inbox.</span></li>
+              <li><i class="fas fa-check-circle"></i> <span data-i18n="gs.b5">Backed by the Egyptian Government's official systems.</span></li>
+            </ul>
+            <button class="btn btn-grad w-100 ripple mt-3" data-bs-toggle="modal" data-bs-target="#authModal"><i class="fas fa-user-plus me-2"></i><span data-i18n="gs.create">Create Account</span></button>
+            <div class="demo-cred"><strong data-i18n="gs.demo">Demo Admin:</strong> ID <code>12345678901234</code> / Password <code>admin123</code></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ABOUT -->
+<section class="page" data-page="about">
+  <div class="page-header"><div class="container"><h1 data-i18n="ab.title">About Egypt E-Portal</h1><p data-i18n="ab.sub">Building a connected, digital Egypt — one citizen at a time.</p></div></div>
+  <section class="block">
+    <div class="container">
+      <div class="row g-5">
+        <div class="col-lg-7">
+          <h2 class="fw-bold mb-3" data-i18n="ab.h">A Modern Government for a Modern Egypt</h2>
+          <p class="text-muted" data-i18n="ab.p">Egypt E-Portal is the Egyptian Government's official digital platform, unifying ministries, agencies, and authorities under a single trusted experience.</p>
+          <div class="row g-4 mt-2">
+            <div class="col-md-6"><div class="feature-card"><div class="ic"><i class="fas fa-eye"></i></div><h4 data-i18n="why.vision">Our Vision</h4><p data-i18n="ab.v">A fully digital Egypt where every citizen can access every service from anywhere.</p></div></div>
+            <div class="col-md-6"><div class="feature-card"><div class="ic"><i class="fas fa-bullseye"></i></div><h4 data-i18n="why.mission">Our Mission</h4><p data-i18n="ab.m">To eliminate friction between citizens and the government services they rely on.</p></div></div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="row g-4">
+            <div class="col-12"><div class="feature-card text-center"><div class="ic mx-auto"><i class="fas fa-users"></i></div><h2 class="fw-bold grad-text">5M+</h2><p data-i18n="stats.citizens">Citizens Served</p></div></div>
+            <div class="col-12"><div class="feature-card text-center"><div class="ic mx-auto"><i class="fas fa-th"></i></div><h2 class="fw-bold grad-text">150+</h2><p data-i18n="stats.services">Digital Services</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- FAQ -->
+<section class="page" data-page="faq">
+  <div class="page-header"><div class="container"><h1 data-i18n="faq.title">Frequently Asked Questions</h1><p data-i18n="faq.sub">Everything you need to know about using Egypt E-Portal.</p></div></div>
+  <section class="block">
+    <div class="container" style="max-width:820px">
+      <div class="accordion" id="faqAcc">
+        <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#f1" data-i18n="faq.q1">How do I create an account?</button></h2><div id="f1" class="accordion-collapse collapse show" data-bs-parent="#faqAcc"><div class="accordion-body" data-i18n="faq.a1">Click the "Login" button, switch to the "Register" tab, and provide your 14-digit National ID, full name, email, and a secure password.</div></div></div>
+        <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#f2" data-i18n="faq.q2">How long does processing take?</button></h2><div id="f2" class="accordion-collapse collapse" data-bs-parent="#faqAcc"><div class="accordion-body" data-i18n="faq.a2">Most services are processed within 3–7 business days.</div></div></div>
+        <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#f3" data-i18n="faq.q3">Is my personal data secure?</button></h2><div id="f3" class="accordion-collapse collapse" data-bs-parent="#faqAcc"><div class="accordion-body" data-i18n="faq.a3">Yes. We use bank-grade encryption and follow Egyptian data protection laws.</div></div></div>
+        <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#f4" data-i18n="faq.q4">What payment methods are accepted?</button></h2><div id="f4" class="accordion-collapse collapse" data-bs-parent="#faqAcc"><div class="accordion-body" data-i18n="faq.a4">Visa, Mastercard, Meeza, Fawry, Vodafone Cash, Orange Money, and bank transfers.</div></div></div>
+        <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#f5" data-i18n="faq.q5">How do I contact support?</button></h2><div id="f5" class="accordion-collapse collapse" data-bs-parent="#faqAcc"><div class="accordion-body" data-i18n="faq.a5">Call our 24/7 hotline at 16537 or email support@egypt.gov.eg.</div></div></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- CONTACT -->
+<section class="page" data-page="contact">
+  <div class="page-header"><div class="container"><h1 data-i18n="ct.title">Contact Us</h1><p data-i18n="ct.sub">We're here 24/7. Reach out — we'll get back to you fast.</p></div></div>
+  <section class="block">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-5">
+          <div class="contact-info">
+            <h3 class="fw-bold mb-4" data-i18n="ct.get">Get in touch</h3>
+            <div class="item"><i class="fas fa-phone"></i><div><h6 data-i18n="ct.phone">Phone</h6><p>16537</p></div></div>
+            <div class="item"><i class="fas fa-envelope"></i><div><h6 data-i18n="ct.email">Email</h6><p>support@egypt.gov.eg</p></div></div>
+            <div class="item"><i class="fas fa-location-dot"></i><div><h6 data-i18n="ct.address">Address</h6><p data-i18n="ct.addr_v">Cabinet of Ministers, Cairo, Egypt</p></div></div>
+            <div class="item"><i class="fas fa-clock"></i><div><h6 data-i18n="ct.hours">Hours</h6><p data-i18n="ct.hours_v">Always open — 24/7 online</p></div></div>
+          </div>
+        </div>
+        <div class="col-lg-7">
+          <div class="feature-card">
+            <h3 class="fw-bold mb-3" data-i18n="ct.send">Send us a message</h3>
+            <form id="contactForm">
+              <div class="mb-3"><label class="form-label fw-semibold" data-i18n="form.name">Full Name</label><input class="form-control" required></div>
+              <div class="mb-3"><label class="form-label fw-semibold" data-i18n="form.email">Email</label><input type="email" class="form-control" required></div>
+              <div class="mb-3"><label class="form-label fw-semibold" data-i18n="form.message">Message</label><textarea class="form-control" rows="5" required></textarea></div>
+              <button class="btn btn-grad ripple" type="submit"><i class="fas fa-paper-plane me-2"></i><span data-i18n="form.send">Send Message</span></button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- DASHBOARD -->
+<section class="page" data-page="dashboard">
+  <div class="page-header"><div class="container"><h1 id="dashTitle">Dashboard</h1><p id="dashSub">Welcome back.</p></div></div>
+  <section class="block"><div class="container" id="dashBody"></div></section>
+</section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="navbar-brand mb-3" style="color:#fff"><span class="brand-mark me-2"><i class="fas fa-landmark"></i></span><span data-i18n="brand">Egypt E-Portal</span></div>
+        <p style="color:#9ca3af" data-i18n="footer.about">The official digital gateway to the Egyptian Government. Built for every citizen, everywhere.</p>
+        <div class="social mt-3">
+          <a><i class="fab fa-facebook-f"></i></a><a><i class="fab fa-twitter"></i></a><a><i class="fab fa-linkedin-in"></i></a><a><i class="fab fa-instagram"></i></a><a><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+      <div class="col-md-2 col-6"><h6 data-i18n="footer.quick">Quick Links</h6><a data-page="home" data-i18n="nav.home">Home</a><a data-page="about" data-i18n="nav.about">About</a><a data-page="contact" data-i18n="nav.contact">Contact</a><a data-page="faq" data-i18n="nav.faq">FAQ</a></div>
+      <div class="col-md-3 col-6"><h6 data-i18n="nav.services">Services</h6><a data-page="services" data-i18n="footer.all">All Services</a><a data-page="track" data-i18n="nav.track">Track</a><a data-page="getstarted" data-i18n="nav.getstarted">Get Started</a></div>
+      <div class="col-md-3"><h6 data-i18n="nav.contact">Contact</h6><a><i class="fas fa-phone me-2"></i>16537</a><a><i class="fas fa-envelope me-2"></i>support@egypt.gov.eg</a><a><i class="fas fa-location-dot me-2"></i><span data-i18n="ct.addr_v">Cairo, Egypt</span></a></div>
+    </div>
+    <div class="copyright">© 2026 <span data-i18n="brand">Egypt E-Portal</span> — <span data-i18n="footer.rights">Arab Republic of Egypt. All rights reserved.</span></div>
+  </div>
+</footer>
+
+<button id="scrollTop"><i class="fas fa-arrow-up"></i></button>
+
+<!-- AUTH MODAL -->
+<div class="modal fade" id="authModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title"><i class="fas fa-user-shield me-2"></i><span data-i18n="auth.title">Account Access</span></h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <ul class="nav nav-tabs mb-3">
+          <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabLogin" data-i18n="auth.login">Login</a></li>
+          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" data-bs-target="#tabReg" data-i18n="auth.register">Register</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="tabLogin">
+            <form id="loginForm">
+              <div class="mb-3"><label class="form-label fw-semibold" data-i18n="auth.nid">National ID (14 digits)</label><input class="form-control" id="logId" maxlength="14" required></div>
+              <div class="mb-3"><label class="form-label fw-semibold" data-i18n="auth.pwd">Password</label><input type="password" class="form-control" id="logPwd" required></div>
+              <button class="btn btn-grad w-100 ripple"><i class="fas fa-right-to-bracket me-2"></i><span data-i18n="auth.login">Login</span></button>
+              <div class="demo-cred"><span data-i18n="gs.demo">Demo Admin:</span> ID <code>12345678901234</code> / pwd <code>admin123</code></div>
+            </form>
+          </div>
+          <div class="tab-pane fade" id="tabReg">
+            <form id="regForm">
+              <div class="row g-2">
+                <div class="col-md-6 mb-2"><label class="form-label fw-semibold" data-i18n="auth.nid">National ID</label><input class="form-control" id="rId" maxlength="14" required></div>
+                <div class="col-md-6 mb-2"><label class="form-label fw-semibold" data-i18n="form.name">Full Name</label><input class="form-control" id="rName" required></div>
+                <div class="col-md-6 mb-2"><label class="form-label fw-semibold" data-i18n="form.email">Email</label><input type="email" class="form-control" id="rEmail" required></div>
+                <div class="col-md-6 mb-2"><label class="form-label fw-semibold" data-i18n="auth.phone">Phone (optional)</label><input class="form-control" id="rPhone"></div>
+                <div class="col-12 mb-2"><label class="form-label fw-semibold" data-i18n="auth.pwd">Password</label><input type="password" class="form-control" id="rPwd" required></div>
+              </div>
+              <button class="btn btn-grad w-100 ripple mt-2"><i class="fas fa-user-plus me-2"></i><span data-i18n="gs.create">Create Account</span></button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICE MODAL -->
+<div class="modal fade" id="serviceModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title" id="svcTitle"></h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body" id="svcBody"></div>
+    </div>
+  </div>
+</div>
+
+<!-- RECEIPT MODAL -->
+<div class="modal fade" id="receiptModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title"><i class="fas fa-circle-check me-2"></i><span data-i18n="rcp.title">Application Submitted</span></h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body" id="receiptBody"></div>
+    </div>
+  </div>
+</div>
+
+<!-- LIBS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+/* ============ TRANSLATIONS ============ */
+const T = {
+  en: {
+    "brand":"Egypt E-Portal",
+    "nav.home":"Home","nav.services":"Services","nav.track":"Track","nav.getstarted":"Get Started","nav.about":"About","nav.faq":"FAQ","nav.contact":"Contact","nav.dashboard":"Dashboard","nav.login":"Login",
+    "hero.welcome":"Welcome to the","hero.title":"Egyptian Government E-Portal","hero.lead":"Access 150+ official digital services from the Egyptian Government — anytime, anywhere. Secure, fast, and built for every citizen.","hero.cta1":"Get Started","hero.cta2":"Explore Services",
+    "stats.citizens":"Citizens Served","stats.services":"Digital Services","stats.avail":"Availability","stats.secure":"Secure",
+    "why.title":"Why Choose","why.sub":"A unified platform connecting every Egyptian citizen with the services they need — without the queues, the paperwork, or the wait.","why.mission":"Our Mission","why.mission_d":"Empower every citizen with effortless access to government services through trusted, modern digital infrastructure.","why.vision":"Our Vision","why.vision_d":"A fully digital Egypt where bureaucracy never stands between people and the services they deserve.","why.values":"Our Values","why.values_d":"Transparency, integrity, accessibility, and innovation — guiding every line of code and every service we deliver.",
+    "srv.title":"Explore Government Services","srv.sub":"Browse 150+ official services. Search, filter, and apply in minutes.","srv.search":"Search services...",
+    "track.title":"Track Your Application","track.sub":"Enter your Application ID or National ID, or scan the QR code on your receipt.","track.label":"Application ID or National ID","track.btn":"Track","track.scan":"Or scan a QR code from your receipt to auto-load your application.","track.notfound":"No application found. Check the ID and try again.",
+    "gs.title":"Get Started in Minutes","gs.sub":"Your gateway to a fully digital relationship with your government.","gs.welcome":"Welcome to","gs.welcome_d":"Create your free account and unlock instant access to every government service from your phone or laptop.","gs.f1":"24/7 Access","gs.f1d":"Apply for services any time of day, any day of the week.","gs.f2":"Secure Platform","gs.f2d":"Bank-grade encryption protecting every interaction and document.","gs.f3":"Mobile Friendly","gs.f3d":"Designed for every screen — phone, tablet, or desktop.","gs.f4":"24/7 Support","gs.f4d":"Our support team is always ready to help — call 16537 anytime.","gs.why":"Why Choose Us?","gs.b1":"Skip the lines — apply online in minutes.","gs.b2":"Track every request in real time.","gs.b3":"Pay securely with multiple payment options.","gs.b4":"Receive digital documents directly to your inbox.","gs.b5":"Backed by the Egyptian Government's official systems.","gs.create":"Create Account","gs.demo":"Demo Admin:",
+    "ab.title":"About Egypt E-Portal","ab.sub":"Building a connected, digital Egypt — one citizen at a time.","ab.h":"A Modern Government for a Modern Egypt","ab.p":"Egypt E-Portal is the Egyptian Government's official digital platform, unifying ministries, agencies, and authorities under a single trusted experience.","ab.v":"A fully digital Egypt where every citizen can access every service from anywhere.","ab.m":"To eliminate friction between citizens and the government services they rely on.",
+    "faq.title":"Frequently Asked Questions","faq.sub":"Everything you need to know about using Egypt E-Portal.","faq.q1":"How do I create an account?","faq.a1":"Click the Login button, switch to the Register tab, and provide your 14-digit National ID, full name, email, and a secure password.","faq.q2":"How long does processing take?","faq.a2":"Most services are processed within 3–7 business days.","faq.q3":"Is my personal data secure?","faq.a3":"Yes. We use bank-grade encryption and follow Egyptian data protection laws.","faq.q4":"What payment methods are accepted?","faq.a4":"Visa, Mastercard, Meeza, Fawry, Vodafone Cash, Orange Money, and bank transfers.","faq.q5":"How do I contact support?","faq.a5":"Call our 24/7 hotline at 16537 or email support@egypt.gov.eg.",
+    "ct.title":"Contact Us","ct.sub":"We're here 24/7. Reach out — we'll get back to you fast.","ct.get":"Get in touch","ct.phone":"Phone","ct.email":"Email","ct.address":"Address","ct.addr_v":"Cabinet of Ministers, Cairo, Egypt","ct.hours":"Hours","ct.hours_v":"Always open — 24/7 online","ct.send":"Send us a message",
+    "form.name":"Full Name","form.email":"Email","form.message":"Message","form.send":"Send Message",
+    "footer.about":"The official digital gateway to the Egyptian Government. Built for every citizen, everywhere.","footer.quick":"Quick Links","footer.all":"All Services","footer.rights":"Arab Republic of Egypt. All rights reserved.",
+    "auth.title":"Account Access","auth.login":"Login","auth.register":"Register","auth.nid":"National ID (14 digits)","auth.pwd":"Password","auth.phone":"Phone (optional)",
+    "rcp.title":"Application Submitted","rcp.id":"Application ID","rcp.svc":"Service","rcp.date":"Submission Date","rcp.status":"Status","rcp.applicant":"Applicant","rcp.files":"Files","rcp.download":"Download QR","rcp.print":"Download Receipt PDF","rcp.copy":"Copy ID","rcp.copied":"Application ID copied!",
+    "tl.submitted":"Submitted","tl.review":"Under Review","tl.approved":"Approved","tl.rejected":"Rejected",
+    "st.pending":"pending","st.approved":"approved","st.rejected":"rejected",
+    "dash.admin":"Admin Analytics Dashboard","dash.admin_sub":"Real-time insights across all services and citizens.","dash.user_sub":"Manage your service requests in one place.","dash.welcome":"Welcome",
+    "k.users":"Total Users","k.apps":"Total Applications","k.pending":"Pending","k.approved":"Approved","k.rejected":"Rejected","k.rate":"Approval Rate","k.time":"Avg Processing","k.rev":"Revenue (EGP)","k.top":"Top Service","k.dau":"Daily Active Users","k.days":"days",
+    "ch.status":"Applications by Status","ch.time":"Applications Over Time","ch.cat":"Requests by Category","ch.rev":"Revenue Trend","ch.top10":"Top 10 Requested Services","ch.geo":"Distribution by Governorate","ch.reg":"User Registrations / Month",
+    "tb.topusers":"Top Users by Requests","tb.topsvc":"Most Requested Services","tb.recent":"Recent Applications","tb.perf":"Performance by Category","tb.user":"User","tb.requests":"Requests","tb.svc":"Service","tb.count":"Count","tb.rev":"Revenue","tb.cat":"Category","tb.avg":"Avg Time","tb.success":"Success Rate","tb.actions":"Actions",
+    "f.today":"Today","f.7d":"Last 7 Days","f.30d":"Last 30 Days","f.12m":"Last 12 Months","f.all":"All Time",
+    "ex.pdf":"Export PDF","ex.xlsx":"Export Excel","ex.print":"Print",
+    "ins.title":"AI Insights",
+    "tabs.req":"Requests","tabs.users":"Users","tabs.analytics":"Analytics",
+    "btn.new":"New Service Request","btn.select":"-- Select a service --","btn.submit":"Submit Request","btn.myreqs":"My Requests","btn.apply":"Apply","btn.upload":"Upload Documents","btn.upload_d":"Click to upload files","btn.submitapp":"Submit Application","btn.req":"Required Documents","btn.branches":"Government Branches",
+    "msg.login_first":"Please login to submit an application.","msg.success":"Application submitted successfully!","msg.invalid":"Invalid credentials.","msg.welcome":"Welcome,","msg.signed":"Signed out.","msg.req_pick":"Pick a service first.","msg.req_done":"Request submitted!","msg.contact":"Message sent — we will reply soon.","msg.nid14":"National ID must be 14 digits.","msg.dup":"National ID already registered.","msg.req_status":"Request","msg.no_reqs":"No requests yet.","msg.no_match":"No services match your search."
+  },
+  ar: {
+    "brand":"البوابة الإلكترونية لمصر",
+    "nav.home":"الرئيسية","nav.services":"الخدمات","nav.track":"تتبع","nav.getstarted":"ابدأ الآن","nav.about":"عن البوابة","nav.faq":"الأسئلة الشائعة","nav.contact":"اتصل بنا","nav.dashboard":"لوحة التحكم","nav.login":"تسجيل الدخول",
+    "hero.welcome":"مرحباً بكم في","hero.title":"البوابة الإلكترونية للحكومة المصرية","hero.lead":"احصل على أكثر من 150 خدمة حكومية رقمية رسمية — في أي وقت ومن أي مكان. آمنة وسريعة وللجميع.","hero.cta1":"ابدأ الآن","hero.cta2":"استكشف الخدمات",
+    "stats.citizens":"مواطن مخدوم","stats.services":"خدمة رقمية","stats.avail":"إتاحة","stats.secure":"آمن",
+    "why.title":"لماذا تختار","why.sub":"منصة موحدة تربط كل مواطن مصري بالخدمات التي يحتاجها — بدون طوابير ولا أوراق ولا انتظار.","why.mission":"رسالتنا","why.mission_d":"تمكين كل مواطن من الوصول للخدمات الحكومية بسهولة عبر بنية رقمية حديثة وموثوقة.","why.vision":"رؤيتنا","why.vision_d":"مصر رقمية بالكامل لا تقف فيها البيروقراطية بين المواطن وحقوقه.","why.values":"قيمنا","why.values_d":"الشفافية والنزاهة وإتاحة الخدمة والابتكار — في كل سطر برمجي وكل خدمة نقدمها.",
+    "srv.title":"استكشف الخدمات الحكومية","srv.sub":"تصفح أكثر من 150 خدمة رسمية. ابحث وفلتر وقدّم في دقائق.","srv.search":"ابحث عن خدمة...",
+    "track.title":"تتبع طلبك","track.sub":"أدخل رقم الطلب أو الرقم القومي، أو امسح كود QR من إيصالك.","track.label":"رقم الطلب أو الرقم القومي","track.btn":"تتبع","track.scan":"أو امسح كود QR من الإيصال لتحميل بياناتك تلقائياً.","track.notfound":"لم يتم العثور على الطلب. تحقق من الرقم وحاول مجدداً.",
+    "gs.title":"ابدأ في دقائق","gs.sub":"بوابتك لعلاقة رقمية كاملة مع حكومتك.","gs.welcome":"مرحباً بك في","gs.welcome_d":"أنشئ حسابك المجاني واستفد فوراً من جميع الخدمات الحكومية من هاتفك أو حاسوبك.","gs.f1":"إتاحة 24/7","gs.f1d":"قدّم على الخدمات في أي وقت من اليوم وأي يوم في الأسبوع.","gs.f2":"منصة آمنة","gs.f2d":"تشفير بمستوى البنوك يحمي كل تفاعل ومستند.","gs.f3":"تعمل على الموبايل","gs.f3d":"مصممة لكل شاشة — موبايل أو تابلت أو كمبيوتر.","gs.f4":"دعم 24/7","gs.f4d":"فريق الدعم متاح دائماً — اتصل بـ 16537 في أي وقت.","gs.why":"لماذا نحن؟","gs.b1":"تجاوز الطوابير — قدّم أونلاين في دقائق.","gs.b2":"تابع كل طلب لحظياً.","gs.b3":"ادفع بأمان بطرق متعددة.","gs.b4":"استلم المستندات الرقمية مباشرة.","gs.b5":"مدعومة من الأنظمة الرسمية للحكومة المصرية.","gs.create":"إنشاء حساب","gs.demo":"حساب تجريبي للمشرف:",
+    "ab.title":"عن البوابة","ab.sub":"نبني مصر رقمية متصلة — مواطن تلو الآخر.","ab.h":"حكومة حديثة لمصر حديثة","ab.p":"البوابة الإلكترونية لمصر هي المنصة الرقمية الرسمية للحكومة المصرية، تجمع الوزارات والهيئات تحت تجربة موحدة وموثوقة.","ab.v":"مصر رقمية بالكامل يستطيع فيها كل مواطن الوصول لكل خدمة من أي مكان.","ab.m":"إزالة الاحتكاك بين المواطنين والخدمات الحكومية التي يعتمدون عليها.",
+    "faq.title":"الأسئلة الشائعة","faq.sub":"كل ما تحتاج معرفته عن استخدام البوابة.","faq.q1":"كيف أنشئ حساباً؟","faq.a1":"اضغط زر تسجيل الدخول، انتقل لتبويب التسجيل، وأدخل الرقم القومي والاسم والبريد وكلمة المرور.","faq.q2":"كم يستغرق معالجة الطلب؟","faq.a2":"معظم الخدمات تتم خلال 3–7 أيام عمل.","faq.q3":"هل بياناتي آمنة؟","faq.a3":"نعم. نستخدم تشفيراً بمستوى البنوك ونلتزم بقوانين حماية البيانات.","faq.q4":"ما طرق الدفع المتاحة؟","faq.a4":"فيزا، ماستركارد، ميزة، فوري، فودافون كاش، أورانج موني، والتحويل البنكي.","faq.q5":"كيف أتواصل مع الدعم؟","faq.a5":"اتصل بـ 16537 أو راسلنا على support@egypt.gov.eg.",
+    "ct.title":"اتصل بنا","ct.sub":"متاحون 24/7. تواصل معنا وسنرد بسرعة.","ct.get":"تواصل معنا","ct.phone":"الهاتف","ct.email":"البريد الإلكتروني","ct.address":"العنوان","ct.addr_v":"مجلس الوزراء، القاهرة، مصر","ct.hours":"ساعات العمل","ct.hours_v":"مفتوح دائماً — 24/7 أونلاين","ct.send":"أرسل لنا رسالة",
+    "form.name":"الاسم بالكامل","form.email":"البريد الإلكتروني","form.message":"الرسالة","form.send":"إرسال",
+    "footer.about":"البوابة الرقمية الرسمية للحكومة المصرية. لكل مواطن، في كل مكان.","footer.quick":"روابط سريعة","footer.all":"كل الخدمات","footer.rights":"جمهورية مصر العربية. جميع الحقوق محفوظة.",
+    "auth.title":"الدخول للحساب","auth.login":"دخول","auth.register":"تسجيل","auth.nid":"الرقم القومي (14 رقم)","auth.pwd":"كلمة المرور","auth.phone":"الهاتف (اختياري)",
+    "rcp.title":"تم تقديم الطلب","rcp.id":"رقم الطلب","rcp.svc":"الخدمة","rcp.date":"تاريخ التقديم","rcp.status":"الحالة","rcp.applicant":"مقدم الطلب","rcp.files":"الملفات","rcp.download":"تحميل QR","rcp.print":"تحميل الإيصال PDF","rcp.copy":"نسخ الرقم","rcp.copied":"تم نسخ رقم الطلب!",
+    "tl.submitted":"تم التقديم","tl.review":"قيد المراجعة","tl.approved":"تمت الموافقة","tl.rejected":"مرفوض",
+    "st.pending":"قيد الانتظار","st.approved":"مقبول","st.rejected":"مرفوض",
+    "dash.admin":"لوحة التحليلات الإدارية","dash.admin_sub":"رؤى لحظية لجميع الخدمات والمواطنين.","dash.user_sub":"أدر طلباتك في مكان واحد.","dash.welcome":"أهلاً",
+    "k.users":"إجمالي المستخدمين","k.apps":"إجمالي الطلبات","k.pending":"قيد الانتظار","k.approved":"المقبولة","k.rejected":"المرفوضة","k.rate":"نسبة الموافقة","k.time":"متوسط المعالجة","k.rev":"الإيرادات (ج.م)","k.top":"الأكثر طلباً","k.dau":"المستخدمون النشطون","k.days":"يوم",
+    "ch.status":"الطلبات حسب الحالة","ch.time":"الطلبات عبر الزمن","ch.cat":"الطلبات حسب الفئة","ch.rev":"اتجاه الإيرادات","ch.top10":"أكثر 10 خدمات طلباً","ch.geo":"التوزيع الجغرافي","ch.reg":"تسجيلات المستخدمين / شهر",
+    "tb.topusers":"أكثر المستخدمين طلباً","tb.topsvc":"أكثر الخدمات طلباً","tb.recent":"أحدث الطلبات","tb.perf":"الأداء حسب الفئة","tb.user":"المستخدم","tb.requests":"الطلبات","tb.svc":"الخدمة","tb.count":"العدد","tb.rev":"الإيراد","tb.cat":"الفئة","tb.avg":"متوسط الوقت","tb.success":"نسبة النجاح","tb.actions":"إجراءات",
+    "f.today":"اليوم","f.7d":"آخر 7 أيام","f.30d":"آخر 30 يوم","f.12m":"آخر 12 شهر","f.all":"كل الفترات",
+    "ex.pdf":"تصدير PDF","ex.xlsx":"تصدير Excel","ex.print":"طباعة",
+    "ins.title":"رؤى ذكية",
+    "tabs.req":"الطلبات","tabs.users":"المستخدمون","tabs.analytics":"التحليلات",
+    "btn.new":"طلب خدمة جديد","btn.select":"-- اختر خدمة --","btn.submit":"إرسال الطلب","btn.myreqs":"طلباتي","btn.apply":"تقديم","btn.upload":"رفع المستندات","btn.upload_d":"اضغط لرفع الملفات","btn.submitapp":"إرسال الطلب","btn.req":"المستندات المطلوبة","btn.branches":"الفروع الحكومية",
+    "msg.login_first":"الرجاء تسجيل الدخول لتقديم الطلب.","msg.success":"تم تقديم الطلب بنجاح!","msg.invalid":"بيانات دخول غير صحيحة.","msg.welcome":"أهلاً،","msg.signed":"تم تسجيل الخروج.","msg.req_pick":"اختر خدمة أولاً.","msg.req_done":"تم إرسال الطلب!","msg.contact":"تم إرسال الرسالة — سنرد قريباً.","msg.nid14":"الرقم القومي يجب أن يكون 14 رقماً.","msg.dup":"هذا الرقم القومي مسجل بالفعل.","msg.req_status":"الطلب","msg.no_reqs":"لا توجد طلبات بعد.","msg.no_match":"لا توجد خدمات مطابقة."
+  }
+};
+
+let LANG = localStorage.getItem('ep_lang') || 'en';
+function tr(k){ return (T[LANG] && T[LANG][k]) || (T.en[k] || k); }
+function applyLang(){
+  document.documentElement.lang = LANG;
+  document.documentElement.dir = LANG === 'ar' ? 'rtl' : 'ltr';
+  document.body.style.fontFamily = LANG === 'ar' ? "'Cairo','Tajawal',sans-serif" : "'Inter',sans-serif";
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k = el.dataset.i18n; const v = tr(k);
+    el.textContent = v;
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{ el.placeholder = tr(el.dataset.i18nPh); });
+  document.getElementById('curLang').textContent = LANG.toUpperCase();
+  // re-render dynamic
+  renderServices();
+  if(document.querySelector('[data-page="dashboard"]').classList.contains('active')) renderDashboard();
+}
+function setLang(l){ LANG = l; localStorage.setItem('ep_lang', l); applyLang(); toast(l==='ar'?'تم تغيير اللغة للعربية':'Language switched to English','success'); }
+
+/* ============ DATA ============ */
+const SERVICES = [
+  {id:1,name:{en:"Birth Certificate",ar:"شهادة ميلاد"},cat:"identity",icon:"fa-baby",desc:{en:"Issue an official birth certificate.",ar:"إصدار شهادة ميلاد رسمية."},fee:50,time:5,req:{en:["Parents' National IDs","Hospital notification"],ar:["البطاقات القومية للوالدين","إخطار المستشفى"]}},
+  {id:2,name:{en:"National ID Renewal",ar:"تجديد البطاقة"},cat:"identity",icon:"fa-id-card",desc:{en:"Renew your expired national ID card.",ar:"تجديد بطاقتك القومية."},fee:75,time:7,req:{en:["Old National ID","Recent photo"],ar:["البطاقة القديمة","صورة شخصية"]}},
+  {id:3,name:{en:"Passport Application",ar:"طلب جواز سفر"},cat:"identity",icon:"fa-passport",desc:{en:"Apply for a new Egyptian passport.",ar:"التقديم على جواز سفر مصري جديد."},fee:300,time:12,req:{en:["National ID","Birth certificate","2 photos"],ar:["البطاقة القومية","شهادة ميلاد","صورتان"]}},
+  {id:4,name:{en:"Driving License",ar:"رخصة قيادة"},cat:"identity",icon:"fa-id-badge",desc:{en:"Apply for or renew your driving license.",ar:"إصدار أو تجديد رخصة القيادة."},fee:200,time:6,req:{en:["National ID","Medical exam","Eye test"],ar:["البطاقة القومية","فحص طبي","فحص نظر"]}},
+  {id:5,name:{en:"Marriage Certificate",ar:"عقد زواج"},cat:"legal",icon:"fa-ring",desc:{en:"Register a marriage and obtain certificate.",ar:"توثيق الزواج وإصدار العقد."},fee:60,time:2,req:{en:["Spouses' IDs","Witnesses' IDs"],ar:["بطاقتا الزوجين","بطاقتا الشهود"]}},
+  {id:6,name:{en:"Divorce Certificate",ar:"وثيقة طلاق"},cat:"legal",icon:"fa-file-contract",desc:{en:"Issue an official divorce certificate.",ar:"إصدار وثيقة طلاق رسمية."},fee:60,time:4,req:{en:["Court ruling","Both IDs"],ar:["حكم المحكمة","البطاقات"]}},
+  {id:7,name:{en:"Criminal Record",ar:"فيش وتشبيه"},cat:"legal",icon:"fa-fingerprint",desc:{en:"Request your criminal record clearance.",ar:"طلب صحيفة الحالة الجنائية."},fee:100,time:6,req:{en:["National ID","Recent photo"],ar:["البطاقة القومية","صورة شخصية"]}},
+  {id:8,name:{en:"Property Registration",ar:"تسجيل عقار"},cat:"legal",icon:"fa-house",desc:{en:"Register real estate property.",ar:"تسجيل ملكية عقارية."},fee:500,time:18,req:{en:["Sale contract","Property survey"],ar:["عقد البيع","المساحة"]}},
+  {id:9,name:{en:"Tax Filing",ar:"إقرار ضريبي"},cat:"financial",icon:"fa-file-invoice-dollar",desc:{en:"Submit your annual tax return.",ar:"تقديم إقرارك الضريبي السنوي."},fee:0,time:1,req:{en:["Tax card","Income statements"],ar:["البطاقة الضريبية","بيان الدخل"]}},
+  {id:10,name:{en:"Social Insurance",ar:"تأمينات اجتماعية"},cat:"financial",icon:"fa-hand-holding-heart",desc:{en:"Register or update social insurance.",ar:"تسجيل أو تحديث التأمينات."},fee:0,time:4,req:{en:["National ID","Employment contract"],ar:["البطاقة","عقد العمل"]}},
+  {id:11,name:{en:"Pension Application",ar:"طلب معاش"},cat:"financial",icon:"fa-piggy-bank",desc:{en:"Apply for retirement pension.",ar:"التقديم على معاش التقاعد."},fee:0,time:18,req:{en:["National ID","Service record"],ar:["البطاقة","سجل الخدمة"]}},
+  {id:12,name:{en:"Company Registration",ar:"تأسيس شركة"},cat:"business",icon:"fa-building",desc:{en:"Establish a new company.",ar:"تأسيس شركة جديدة."},fee:2000,time:10,req:{en:["Founders' IDs","Articles of association"],ar:["بطاقات المؤسسين","عقد التأسيس"]}},
+  {id:13,name:{en:"Business License",ar:"رخصة نشاط"},cat:"business",icon:"fa-store",desc:{en:"Operating license for commercial activity.",ar:"رخصة تشغيل النشاط التجاري."},fee:1000,time:8,req:{en:["Commercial register","Tax card"],ar:["السجل التجاري","البطاقة الضريبية"]}},
+  {id:14,name:{en:"Import License",ar:"رخصة استيراد"},cat:"business",icon:"fa-ship",desc:{en:"Authorization to import goods.",ar:"تصريح استيراد البضائع."},fee:1500,time:12,req:{en:["Commercial register","Bank statement"],ar:["السجل التجاري","كشف بنكي"]}},
+  {id:15,name:{en:"School Registration",ar:"تسجيل مدرسي"},cat:"education",icon:"fa-school",desc:{en:"Enroll your child in public school.",ar:"تسجيل طفلك في مدرسة حكومية."},fee:0,time:4,req:{en:["Birth certificate","Parents' IDs"],ar:["شهادة الميلاد","بطاقات الوالدين"]}},
+  {id:16,name:{en:"University Transcript",ar:"شهادة جامعية"},cat:"education",icon:"fa-graduation-cap",desc:{en:"Official certified academic transcript.",ar:"شهادة أكاديمية رسمية معتمدة."},fee:100,time:6,req:{en:["Student ID","Graduation certificate"],ar:["بطاقة الطالب","شهادة التخرج"]}},
+  {id:17,name:{en:"Health Insurance",ar:"تأمين صحي"},cat:"health",icon:"fa-heart-pulse",desc:{en:"Subscribe to comprehensive health insurance.",ar:"الاشتراك في التأمين الصحي الشامل."},fee:0,time:4,req:{en:["National ID","Employment proof"],ar:["البطاقة","إثبات العمل"]}},
+  {id:18,name:{en:"Vaccination Record",ar:"سجل التطعيمات"},cat:"health",icon:"fa-syringe",desc:{en:"Get your immunization record.",ar:"الحصول على سجل التطعيمات."},fee:20,time:1,req:{en:["National ID","Previous card"],ar:["البطاقة","البطاقة السابقة"]}}
+];
+const CATS = [
+  {id:"all",name:{en:"All Services",ar:"كل الخدمات"}},
+  {id:"identity",name:{en:"Identity",ar:"الهوية"}},
+  {id:"legal",name:{en:"Legal",ar:"قانوني"}},
+  {id:"financial",name:{en:"Financial",ar:"مالي"}},
+  {id:"business",name:{en:"Business",ar:"أعمال"}},
+  {id:"education",name:{en:"Education",ar:"تعليم"}},
+  {id:"health",name:{en:"Health",ar:"صحة"}}
+];
+const GOVS = ["Cairo","Alexandria","Giza","Luxor","Aswan","Port Said","Ismailia","Suez"];
+const GOVS_AR = {Cairo:"القاهرة",Alexandria:"الإسكندرية",Giza:"الجيزة",Luxor:"الأقصر",Aswan:"أسوان","Port Said":"بورسعيد",Ismailia:"الإسماعيلية",Suez:"السويس"};
+const BRANCHES={
+  Cairo:[{n:"Cairo Main Branch",a:"Tahrir Square, Downtown Cairo",p:"02-2390-1234"},{n:"Nasr City Branch",a:"Abbas El Akkad St., Nasr City",p:"02-2401-5678"}],
+  Alexandria:[{n:"Alexandria Central",a:"Saad Zaghloul Sq., Manshiya",p:"03-484-1100"}],
+  Giza:[{n:"Giza Main Branch",a:"Pyramids St., Giza",p:"02-3567-1010"}],
+  "Port Said":[{n:"Port Said Office",a:"Atef El Sadat St., Port Said",p:"066-322-7700"}],
+  Suez:[{n:"Suez Branch",a:"El Geish Rd., Suez",p:"062-322-1900"}],
+  Luxor:[{n:"Luxor Office",a:"Corniche El Nile, Luxor",p:"095-237-4400"}],
+  Aswan:[{n:"Aswan Branch",a:"Corniche El Nile, Aswan",p:"097-231-5500"}],
+  Ismailia:[{n:"Ismailia Office",a:"El Tahrir St., Ismailia",p:"064-391-2233"}]
+};
+
+/* ============ STATE & SEEDING ============ */
+let users = JSON.parse(localStorage.getItem('ep_users')||'null');
+let requests = JSON.parse(localStorage.getItem('ep_reqs')||'null');
+let current = JSON.parse(localStorage.getItem('ep_current')||'null');
+
+function uid(){ return 'APP-2026-' + String(Math.floor(Math.random()*900000)+100000); }
+function rand(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+
+function seedData(){
+  users = [{id:"12345678901234",name:"System Administrator",email:"admin@egypt.gov.eg",phone:"16537",pwd:"admin123",role:"admin",gov:"Cairo",createdAt:Date.now()-1000*60*60*24*365}];
+  const firstNames = ["Ahmed","Mohamed","Mahmoud","Omar","Youssef","Hassan","Khaled","Tarek","Fatma","Aisha","Mariam","Nour","Salma","Hana","Mona","Layla","Rania","Sara"];
+  const lastNames = ["El-Sayed","Ibrahim","Hassan","Ali","Mostafa","Farouk","Khalil","Naguib","Mansour","Sabry","Fahmy","Zaki","Nasser","Saad","Ramadan"];
+  const N_USERS = 320;
+  for(let i=0;i<N_USERS;i++){
+    const id = String(rand(2,3)) + String(rand(10,99)) + String(rand(1000000000000,9999999999999)).slice(0,12);
+    users.push({
+      id, name: pick(firstNames)+" "+pick(lastNames),
+      email: "user"+i+"@mail.com", phone:"010"+rand(10000000,99999999),
+      pwd:"user123", role:"citizen", gov: pick(GOVS),
+      createdAt: Date.now() - rand(0, 365)*24*60*60*1000
+    });
+  }
+  requests = [];
+  const N_REQS = 1800;
+  for(let i=0;i<N_REQS;i++){
+    const u = users[rand(1, users.length-1)];
+    const s = SERVICES[rand(0, SERVICES.length-1)];
+    const daysAgo = rand(0, 365);
+    const submittedAt = Date.now() - daysAgo*24*60*60*1000;
+    const r = Math.random();
+    const status = r<0.62 ? 'approved' : r<0.85 ? 'pending' : 'rejected';
+    requests.push({
+      id: 'APP-2026-'+String(100000+i),
+      userId: u.id, userName: u.name, userGov: u.gov,
+      svcId: s.id, svcCat: s.cat,
+      status, submittedAt,
+      processedDays: status!=='pending' ? rand(1, s.time+5) : null,
+      fee: s.fee, files: rand(1,5)
+    });
+  }
+  requests.sort((a,b)=>b.submittedAt-a.submittedAt);
+  saveAll();
+}
+
+function saveAll(){
+  localStorage.setItem('ep_users',JSON.stringify(users));
+  localStorage.setItem('ep_reqs',JSON.stringify(requests));
+  localStorage.setItem('ep_current',JSON.stringify(current));
+}
+
+if(!users || !requests){ seedData(); }
+
+/* ============ UTILS ============ */
+function svcName(s){ return s.name[LANG] || s.name.en; }
+function svcDesc(s){ return s.desc[LANG] || s.desc.en; }
+function svcReq(s){ return s.req[LANG] || s.req.en; }
+function catName(c){ return c.name[LANG] || c.name.en; }
+function svcById(id){ return SERVICES.find(x=>x.id===id); }
+function fmtDate(ts){ return new Date(ts).toLocaleDateString(LANG==='ar'?'ar-EG':'en-GB'); }
+function govName(g){ return LANG==='ar' ? (GOVS_AR[g]||g) : g; }
+
+function toast(msg,type='info'){
+  const i={info:'circle-info',success:'circle-check',warning:'triangle-exclamation',danger:'circle-xmark'}[type];
+  const el=document.createElement('div');el.className='toast-item '+type;
+  el.innerHTML=`<i class="fas fa-${i}"></i><div>${msg}</div>`;
+  document.getElementById('toastStack').appendChild(el);
+  setTimeout(()=>{el.style.animation='slideIn .3s reverse';setTimeout(()=>el.remove(),300)},3500);
+}
+
+/* ============ NAV ============ */
+function navTo(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.dataset.page===page));
+  document.querySelectorAll('#navLinks .nav-link').forEach(l=>l.classList.toggle('active',l.dataset.page===page));
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(page==='services')renderServices();
+  if(page==='dashboard')renderDashboard();
+  if(page==='track')renderTrack();
+  if(page==='home')setTimeout(animCounters,300);
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-page]');
+  if(t){e.preventDefault();navTo(t.dataset.page);}
+});
+
+/* ============ SERVICES ============ */
+let activeCat='all',activeQ='';
+function renderFilters(){
+  const f=document.getElementById('filters');
+  f.innerHTML=CATS.map(c=>`<div class="chip ${c.id===activeCat?'active':''}" data-cat="${c.id}">${catName(c)}</div>`).join('');
+  f.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{activeCat=c.dataset.cat;renderServices();});
+}
+function renderServices(){
+  if(!document.getElementById('filters')) return;
+  renderFilters();
+  const g=document.getElementById('servicesGrid');
+  const list=SERVICES.filter(s=>(activeCat==='all'||s.cat===activeCat)&&(svcName(s).toLowerCase().includes(activeQ)||svcDesc(s).toLowerCase().includes(activeQ)));
+  if(!list.length){g.innerHTML=`<div class="col-12 text-center py-5 text-muted"><i class="fas fa-search fa-2x mb-3 d-block"></i>${tr('msg.no_match')}</div>`;return;}
+  g.innerHTML=list.map(s=>`
+    <div class="col-md-6 col-lg-4">
+      <div class="service-card" data-svc="${s.id}">
+        <div class="ic"><i class="fas ${s.icon}"></i></div>
+        <h5>${svcName(s)}</h5>
+        <p>${svcDesc(s)}</p>
+        <div class="service-meta">
+          <span class="badge-fee ${s.fee===0?'free':''}">${s.fee===0?(LANG==='ar'?'مجاني':'FREE'):s.fee+' EGP'}</span>
+          <span class="badge-time"><i class="far fa-clock me-1"></i>${s.time} ${tr('k.days')}</span>
+        </div>
+      </div>
+    </div>`).join('');
+  g.querySelectorAll('[data-svc]').forEach(c=>c.onclick=()=>openService(+c.dataset.svc));
+}
+const si = document.getElementById('searchInput');
+if(si) si.addEventListener('input',e=>{activeQ=e.target.value.toLowerCase();renderServices();});
+
+let pendingFiles=[];
+function openService(id){
+  const s=svcById(id);pendingFiles=[];
+  document.getElementById('svcTitle').innerHTML=`<i class="fas ${s.icon} me-2"></i>${svcName(s)}`;
+  const branchHtml=Object.entries(BRANCHES).map(([g,arr])=>`<div class="mb-2"><strong style="color:var(--primary-2)">${govName(g)}</strong>${arr.map(b=>`<div class="branch"><h6>${b.n}</h6><small><i class="fas fa-location-dot me-1"></i>${b.a}</small><small><i class="fas fa-phone me-1"></i>${b.p}</small></div>`).join('')}</div>`).join('');
+  document.getElementById('svcBody').innerHTML=`
+    <p class="text-muted">${svcDesc(s)}</p>
+    <div class="row g-2 mb-3"><div class="col-6"><div class="badge-fee ${s.fee===0?'free':''} d-block text-center py-2">${s.fee===0?(LANG==='ar'?'مجاني':'FREE'):s.fee+' EGP'}</div></div><div class="col-6"><div class="badge-time d-block text-center py-2"><i class="far fa-clock me-1"></i>${s.time} ${tr('k.days')}</div></div></div>
+    <h6 class="fw-bold mt-4 mb-2"><i class="fas fa-list-check me-2" style="color:var(--primary)"></i>${tr('btn.req')}</h6>
+    <ul class="req-list">${svcReq(s).map(r=>`<li><i class="fas fa-check"></i>${r}</li>`).join('')}</ul>
+    <h6 class="fw-bold mt-4 mb-2"><i class="fas fa-building-columns me-2" style="color:var(--primary)"></i>${tr('btn.branches')}</h6>
+    <div style="max-height:240px;overflow-y:auto;padding-right:6px">${branchHtml}</div>
+    <h6 class="fw-bold mt-4 mb-2"><i class="fas fa-cloud-arrow-up me-2" style="color:var(--primary)"></i>${tr('btn.upload')}</h6>
+    <div class="upload-area" id="uploadArea"><i class="fas fa-cloud-arrow-up d-block"></i><div class="fw-semibold">${tr('btn.upload_d')}</div><small class="text-muted">PDF, JPG, PNG</small><input type="file" multiple accept=".pdf,.jpg,.jpeg,.png" id="fileInput" hidden></div>
+    <div id="fileList"></div>
+    <button class="btn btn-grad w-100 ripple mt-4" id="submitApp"><i class="fas fa-paper-plane me-2"></i>${tr('btn.submitapp')}</button>`;
+  const ua=document.getElementById('uploadArea'),fi=document.getElementById('fileInput');
+  ua.onclick=()=>fi.click();
+  fi.onchange=()=>{pendingFiles=[...fi.files];renderFiles();};
+  document.getElementById('submitApp').onclick=()=>submitApp(s);
+  new bootstrap.Modal(document.getElementById('serviceModal')).show();
+}
+function renderFiles(){document.getElementById('fileList').innerHTML=pendingFiles.map((f,i)=>`<div class="file-item"><div><i class="fas fa-file me-2" style="color:var(--primary)"></i>${f.name} <small class="text-muted">(${(f.size/1024).toFixed(1)} KB)</small></div><button class="btn btn-sm text-danger" onclick="pendingFiles.splice(${i},1);renderFiles()"><i class="fas fa-trash"></i></button></div>`).join('');}
+
+function submitApp(s){
+  if(!current){toast(tr('msg.login_first'),'warning');bootstrap.Modal.getInstance(document.getElementById('serviceModal')).hide();new bootstrap.Modal(document.getElementById('authModal')).show();return;}
+  const newReq = {
+    id: uid(), userId:current.id, userName:current.name, userGov: current.gov||'Cairo',
+    svcId:s.id, svcCat:s.cat, status:'pending',
+    submittedAt: Date.now(), processedDays:null, fee:s.fee, files:pendingFiles.length
+  };
+  requests.unshift(newReq); saveAll();
+  bootstrap.Modal.getInstance(document.getElementById('serviceModal')).hide();
+  showReceipt(newReq);
+  confetti({particleCount:120,spread:80,origin:{y:.6}});
+  toast(tr('msg.success'),'success');
+}
+
+/* ============ RECEIPT / QR ============ */
+function showReceipt(r){
+  const s = svcById(r.svcId);
+  const trackUrl = location.origin + location.pathname + '#track=' + r.id;
+  document.getElementById('receiptBody').innerHTML = `
+    <div class="row g-4">
+      <div class="col-md-5 text-center">
+        <div class="qr-wrap" id="qrBox"></div>
+        <div class="mt-3">
+          <button class="btn btn-grad btn-sm ripple me-2" onclick="downloadQR()"><i class="fas fa-download me-1"></i>${tr('rcp.download')}</button>
+          <button class="btn btn-outline-primary btn-sm" onclick="copyId('${r.id}')"><i class="fas fa-copy me-1"></i>${tr('rcp.copy')}</button>
+        </div>
+      </div>
+      <div class="col-md-7">
+        <div class="receipt" id="receiptCard">
+          <h5><span><i class="fas fa-landmark me-2" style="color:var(--primary)"></i>Egypt E-Portal</span><i class="fas fa-circle-check" style="color:var(--success)"></i></h5>
+          <div class="row-line"><span>${tr('rcp.id')}</span><span><code>${r.id}</code></span></div>
+          <div class="row-line"><span>${tr('rcp.svc')}</span><span>${svcName(s)}</span></div>
+          <div class="row-line"><span>${tr('rcp.applicant')}</span><span>${r.userName}</span></div>
+          <div class="row-line"><span>${tr('rcp.date')}</span><span>${fmtDate(r.submittedAt)}</span></div>
+          <div class="row-line"><span>${tr('rcp.files')}</span><span>${r.files}</span></div>
+          <div class="row-line"><span>${tr('tb.rev')}</span><span>${r.fee} EGP</span></div>
+          <div class="row-line"><span>${tr('rcp.status')}</span><span><span class="status-badge status-${r.status}">${tr('st.'+r.status)}</span></span></div>
+        </div>
+        <button class="btn btn-grad w-100 ripple mt-3" onclick="downloadReceipt('${r.id}')"><i class="fas fa-file-pdf me-2"></i>${tr('rcp.print')}</button>
+      </div>
+    </div>`;
+  new bootstrap.Modal(document.getElementById('receiptModal')).show();
+  setTimeout(()=>{ new QRCode(document.getElementById('qrBox'), {text:trackUrl,width:180,height:180,colorDark:"#1a1a2e",colorLight:"#fff"}); }, 200);
+}
+function copyId(id){ navigator.clipboard.writeText(id); toast(tr('rcp.copied'),'success'); }
+function downloadQR(){
+  const img = document.querySelector('#qrBox img') || document.querySelector('#qrBox canvas');
+  if(!img) return;
+  const a = document.createElement('a');
+  a.href = img.tagName==='IMG' ? img.src : img.toDataURL();
+  a.download = 'egypt-eportal-qr.png'; a.click();
+}
+async function downloadReceipt(id){
+  const el = document.getElementById('receiptCard');
+  const canvas = await html2canvas(el, {backgroundColor:'#fff', scale:2});
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({unit:'mm',format:'a4'});
+  const w = 190, h = canvas.height * w / canvas.width;
+  pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 10, 10, w, h);
+  pdf.save('receipt-'+id+'.pdf');
+}
+
+/* ============ TRACK ============ */
+function renderTrack(){
+  const hash = location.hash;
+  if(hash.startsWith('#track=')){
+    const id = decodeURIComponent(hash.slice(7));
+    document.getElementById('trackInput').value = id;
+    setTimeout(doTrack, 100);
+  } else {
+    document.getElementById('trackResult').innerHTML='';
+  }
+}
+window.addEventListener('hashchange', ()=>{ if(document.querySelector('[data-page="track"]').classList.contains('active')) renderTrack(); });
+
+function doTrack(){
+  const q = document.getElementById('trackInput').value.trim();
+  if(!q){ toast(tr('msg.req_pick'),'warning'); return; }
+  let r = requests.find(x=>x.id.toLowerCase()===q.toLowerCase());
+  if(!r) r = requests.find(x=>x.userId===q);
+  const out = document.getElementById('trackResult');
+  if(!r){ out.innerHTML = `<div class="feature-card text-center text-muted py-5"><i class="fas fa-circle-exclamation fa-2x mb-3 d-block" style="color:var(--warning)"></i>${tr('track.notfound')}</div>`; return; }
+  const s = svcById(r.svcId);
+  const u = users.find(x=>x.id===r.userId) || {name:r.userName, gov:r.userGov};
+  const trackUrl = location.origin + location.pathname + '#track=' + r.id;
+  const tlClass = (step)=>{
+    if(r.status==='rejected'){ if(step===1)return 'done'; if(step===2)return 'done'; if(step===3)return 'rejected'; }
+    if(r.status==='approved'){ return 'done'; }
+    if(step===1) return 'done'; if(step===2) return 'current'; return '';
+  };
+  out.innerHTML = `
+    <div class="feature-card">
+      <div class="row g-4 align-items-center">
+        <div class="col-md-4 text-center">
+          <div class="qr-wrap" id="trackQr"></div>
+        </div>
+        <div class="col-md-8">
+          <h4 class="fw-bold mb-1"><i class="fas ${s.icon} me-2" style="color:var(--primary)"></i>${svcName(s)}</h4>
+          <p class="text-muted mb-3"><code>${r.id}</code></p>
+          <div class="row g-2">
+            <div class="col-sm-6"><small class="text-muted">${tr('rcp.applicant')}</small><div class="fw-semibold">${u.name}</div></div>
+            <div class="col-sm-6"><small class="text-muted">${tr('auth.nid')}</small><div class="fw-semibold"><code>${r.userId}</code></div></div>
+            <div class="col-sm-6"><small class="text-muted">${tr('rcp.date')}</small><div class="fw-semibold">${fmtDate(r.submittedAt)}</div></div>
+            <div class="col-sm-6"><small class="text-muted">${tr('ch.geo')}</small><div class="fw-semibold">${govName(u.gov||r.userGov||'Cairo')}</div></div>
+            <div class="col-sm-6"><small class="text-muted">${tr('rcp.files')}</small><div class="fw-semibold">${r.files}</div></div>
+            <div class="col-sm-6"><small class="text-muted">${tr('rcp.status')}</small><div><span class="status-badge status-${r.status}">${tr('st.'+r.status)}</span></div></div>
+          </div>
+        </div>
+      </div>
+      <hr class="my-4">
+      <div class="timeline">
+        <div class="tl-step ${tlClass(1)}"><div class="tl-dot"><i class="fas fa-paper-plane"></i></div><div class="tl-label">${tr('tl.submitted')}</div></div>
+        <div class="tl-step ${tlClass(2)}"><div class="tl-dot"><i class="fas fa-magnifying-glass"></i></div><div class="tl-label">${tr('tl.review')}</div></div>
+        <div class="tl-step ${tlClass(3)}"><div class="tl-dot"><i class="fas fa-${r.status==='rejected'?'xmark':'check'}"></i></div><div class="tl-label">${r.status==='rejected'?tr('tl.rejected'):tr('tl.approved')}</div></div>
+      </div>
+    </div>`;
+  setTimeout(()=>{ document.getElementById('trackQr').innerHTML=''; new QRCode(document.getElementById('trackQr'), {text:trackUrl,width:160,height:160,colorDark:"#1a1a2e",colorLight:"#fff"}); }, 50);
+}
+
+/* ============ AUTH ============ */
+document.getElementById('loginForm').onsubmit=e=>{
+  e.preventDefault();
+  const id=logId.value.trim(),p=logPwd.value;
+  const u=users.find(x=>x.id===id&&x.pwd===p);
+  if(!u){toast(tr('msg.invalid'),'danger');return;}
+  current=u;saveAll();afterAuth();
+};
+document.getElementById('regForm').onsubmit=e=>{
+  e.preventDefault();
+  const id=rId.value.trim();
+  if(id.length!==14||!/^\d+$/.test(id)){toast(tr('msg.nid14'),'warning');return;}
+  if(users.find(u=>u.id===id)){toast(tr('msg.dup'),'warning');return;}
+  const u={id,name:rName.value,email:rEmail.value,phone:rPhone.value,pwd:rPwd.value,role:'citizen',gov:'Cairo',createdAt:Date.now()};
+  users.push(u);current=u;saveAll();afterAuth();
+};
+function afterAuth(){
+  bootstrap.Modal.getInstance(document.getElementById('authModal')).hide();
+  toast(tr('msg.welcome')+' '+current.name+'!','success');
+  refreshAuthUI();navTo('dashboard');
+}
+function refreshAuthUI(){
+  const btn=document.getElementById('authBtn'),dash=document.getElementById('navDashboard');
+  if(current){
+    btn.innerHTML='<i class="fas fa-right-from-bracket me-1"></i> '+(LANG==='ar'?'خروج':'Logout');
+    btn.removeAttribute('data-bs-toggle');btn.removeAttribute('data-bs-target');
+    btn.onclick=()=>{current=null;saveAll();refreshAuthUI();toast(tr('msg.signed'),'info');navTo('home');};
+    dash.classList.remove('d-none');
+  } else {
+    btn.innerHTML='<i class="fas fa-user me-1"></i> '+tr('nav.login');
+    btn.setAttribute('data-bs-toggle','modal');btn.setAttribute('data-bs-target','#authModal');
+    btn.onclick=null;dash.classList.add('d-none');
+  }
+}
+
+/* ============ DASHBOARD ============ */
+let dashFilter = 'all';
+let charts = {};
+
+function filterRequests(){
+  const now = Date.now(), d = 24*60*60*1000;
+  const ranges = {today:1,'7d':7,'30d':30,'12m':365,'all':99999};
+  const days = ranges[dashFilter];
+  return requests.filter(r => (now - r.submittedAt) <= days*d);
+}
+
+function renderDashboard(){
+  if(!current){navTo('home');toast(tr('msg.login_first'),'warning');return;}
+  document.getElementById('dashTitle').textContent = current.role==='admin' ? tr('dash.admin') : `${tr('dash.welcome')}, ${current.name}`;
+  document.getElementById('dashSub').textContent = current.role==='admin' ? tr('dash.admin_sub') : tr('dash.user_sub');
+  const body=document.getElementById('dashBody');
+  if(current.role==='admin') renderAdmin(body);
+  else renderUser(body);
+}
+
+function renderAdmin(body){
+  const data = filterRequests();
+  const totalRev = data.filter(r=>r.status==='approved').reduce((s,r)=>s+r.fee,0);
+  const pending = data.filter(r=>r.status==='pending').length;
+  const approved = data.filter(r=>r.status==='approved').length;
+  const rejected = data.filter(r=>r.status==='rejected').length;
+  const rate = data.length ? Math.round(approved/data.length*100) : 0;
+  const avgTime = (()=>{ const arr=data.filter(r=>r.processedDays); return arr.length?Math.round(arr.reduce((s,r)=>s+r.processedDays,0)/arr.length):0; })();
+  const svcCounts = {}; data.forEach(r=>svcCounts[r.svcId]=(svcCounts[r.svcId]||0)+1);
+  const topSvcId = Object.entries(svcCounts).sort((a,b)=>b[1]-a[1])[0]?.[0];
+  const topSvc = topSvcId ? svcName(svcById(+topSvcId)) : '—';
+  const dau = new Set(data.filter(r=>(Date.now()-r.submittedAt)<24*60*60*1000).map(r=>r.userId)).size;
+
+  const filters = ['today','7d','30d','12m','all'].map(k=>`<div class="pill ${k===dashFilter?'active':''}" data-f="${k}">${tr('f.'+k)}</div>`).join('');
+
+  body.innerHTML = `
+    <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
+      <div class="pill-filters">${filters}</div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-sm btn-grad ripple" onclick="exportPDF()"><i class="fas fa-file-pdf me-1"></i>${tr('ex.pdf')}</button>
+        <button class="btn btn-sm btn-grad ripple" onclick="exportXLSX()"><i class="fas fa-file-excel me-1"></i>${tr('ex.xlsx')}</button>
+        <button class="btn btn-sm btn-outline-primary" onclick="window.print()"><i class="fas fa-print me-1"></i>${tr('ex.print')}</button>
+      </div>
+    </div>
+
+    <div id="kpiGrid" class="row g-3 mb-4">
+      ${kpi('users',users.length,'fa-users')}
+      ${kpi('apps',data.length,'fa-file-lines')}
+      ${kpi('pending',pending,'fa-hourglass-half')}
+      ${kpi('approved',approved,'fa-circle-check')}
+      ${kpi('rejected',rejected,'fa-circle-xmark')}
+      ${kpi('rate',rate+'%','fa-chart-line')}
+      ${kpi('time',avgTime+' '+tr('k.days'),'fa-stopwatch')}
+      ${kpi('rev',totalRev.toLocaleString(),'fa-money-bill-trend-up')}
+      ${kpi('top',topSvc,'fa-star')}
+      ${kpi('dau',dau,'fa-user-clock')}
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-lg-4"><div class="chart-card"><h5><i class="fas fa-chart-pie"></i>${tr('ch.status')}</h5><div class="chart-wrap"><canvas id="chStatus"></canvas></div></div></div>
+      <div class="col-lg-8"><div class="chart-card"><h5><i class="fas fa-chart-line"></i>${tr('ch.time')}</h5><div class="chart-wrap"><canvas id="chTime"></canvas></div></div></div>
+      <div class="col-lg-6"><div class="chart-card"><h5><i class="fas fa-chart-column"></i>${tr('ch.cat')}</h5><div class="chart-wrap"><canvas id="chCat"></canvas></div></div></div>
+      <div class="col-lg-6"><div class="chart-card"><h5><i class="fas fa-chart-area"></i>${tr('ch.rev')}</h5><div class="chart-wrap"><canvas id="chRev"></canvas></div></div></div>
+      <div class="col-lg-6"><div class="chart-card"><h5><i class="fas fa-ranking-star"></i>${tr('ch.top10')}</h5><div class="chart-wrap"><canvas id="chTop"></canvas></div></div></div>
+      <div class="col-lg-6"><div class="chart-card"><h5><i class="fas fa-map-location-dot"></i>${tr('ch.geo')}</h5><div class="chart-wrap"><canvas id="chGeo"></canvas></div></div></div>
+      <div class="col-12"><div class="chart-card"><h5><i class="fas fa-user-plus"></i>${tr('ch.reg')}</h5><div class="chart-wrap"><canvas id="chReg"></canvas></div></div></div>
+    </div>
+
+    <div class="chart-card mb-4">
+      <h5><i class="fas fa-lightbulb"></i>${tr('ins.title')}</h5>
+      <div id="insights"></div>
+    </div>
+
+    <ul class="nav nav-tabs">
+      <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" data-bs-target="#tReq">${tr('tabs.req')}</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" data-bs-target="#tUsr">${tr('tabs.users')}</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" data-bs-target="#tTab">${tr('tabs.analytics')}</a></li>
+    </ul>
+    <div class="tab-content p-4 rounded-bottom" style="background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 16px 16px">
+      <div class="tab-pane fade show active" id="tReq">
+        <h6 class="fw-bold mb-3">${tr('tb.recent')}</h6>
+        <div class="table-responsive"><table class="table align-middle"><thead><tr><th>${tr('rcp.id')}</th><th>${tr('tb.user')}</th><th>${tr('tb.svc')}</th><th>${tr('rcp.date')}</th><th>${tr('rcp.status')}</th><th>${tr('tb.actions')}</th></tr></thead><tbody>
+        ${data.slice(0,40).map(r=>{const s=svcById(r.svcId);return `<tr><td><code>${r.id}</code></td><td>${r.userName}</td><td>${svcName(s)}</td><td>${fmtDate(r.submittedAt)}</td><td><span class="status-badge status-${r.status}">${tr('st.'+r.status)}</span></td><td>${r.status==='pending'?`<button class="btn btn-sm btn-success me-1" onclick="setReq('${r.id}','approved')"><i class="fas fa-check"></i></button><button class="btn btn-sm btn-danger" onclick="setReq('${r.id}','rejected')"><i class="fas fa-times"></i></button>`:'—'}</td></tr>`}).join('')}
+        </tbody></table></div>
+      </div>
+      <div class="tab-pane fade" id="tUsr">
+        <h6 class="fw-bold mb-3">${tr('tb.topusers')}</h6>
+        <div class="table-responsive"><table class="table align-middle"><thead><tr><th>${tr('tb.user')}</th><th>${tr('auth.nid')}</th><th>${tr('ch.geo')}</th><th>${tr('tb.requests')}</th></tr></thead><tbody>
+        ${topUsers(data).map(u=>`<tr><td>${u.name}</td><td><code>${u.id}</code></td><td>${govName(u.gov)}</td><td><strong>${u.count}</strong></td></tr>`).join('')}
+        </tbody></table></div>
+      </div>
+      <div class="tab-pane fade" id="tTab">
+        <h6 class="fw-bold mb-3">${tr('tb.perf')}</h6>
+        <div class="table-responsive"><table class="table align-middle"><thead><tr><th>${tr('tb.cat')}</th><th>${tr('tb.count')}</th><th>${tr('tb.avg')}</th><th>${tr('tb.success')}</th><th>${tr('tb.rev')}</th></tr></thead><tbody>
+        ${perfByCat(data).map(p=>`<tr><td><strong>${catName(CATS.find(c=>c.id===p.cat))}</strong></td><td>${p.count}</td><td>${p.avg} ${tr('k.days')}</td><td>${p.rate}%</td><td>${p.rev.toLocaleString()} EGP</td></tr>`).join('')}
+        </tbody></table></div>
+      </div>
+    </div>`;
+
+  document.querySelectorAll('.pill[data-f]').forEach(p=>p.onclick=()=>{dashFilter=p.dataset.f;renderDashboard();});
+  setTimeout(()=>{ buildCharts(data); renderInsights(data); animKpis(); }, 50);
+}
+
+function kpi(k,val,icon){
+  return `<div class="col-md-3 col-sm-6"><div class="stat-mini"><div class="ic"><i class="fas ${icon}"></i></div><div><h3 class="kpi-val" data-val="${typeof val==='number'?val:''}">${val}</h3><small>${tr('k.'+k)}</small></div></div></div>`;
+}
+function animKpis(){
+  document.querySelectorAll('.kpi-val[data-val]').forEach(el=>{
+    const t = parseInt(el.dataset.val); if(!t || isNaN(t)) return;
+    const start = performance.now(), dur=900;
+    function step(now){ const p = Math.min((now-start)/dur,1); el.textContent = Math.floor(t*(1-Math.pow(1-p,3))).toLocaleString(); if(p<1) requestAnimationFrame(step); else el.textContent = t.toLocaleString(); }
+    requestAnimationFrame(step);
+  });
+}
+
+function topUsers(data){
+  const m={};
+  data.forEach(r=>{ m[r.userId] = m[r.userId] || {id:r.userId,name:r.userName,gov:r.userGov,count:0}; m[r.userId].count++; });
+  return Object.values(m).sort((a,b)=>b.count-a.count).slice(0,10);
+}
+function perfByCat(data){
+  return CATS.filter(c=>c.id!=='all').map(c=>{
+    const arr = data.filter(r=>r.svcCat===c.id);
+    const ok = arr.filter(r=>r.status==='approved');
+    const proc = arr.filter(r=>r.processedDays);
+    return {cat:c.id, count:arr.length, avg: proc.length?Math.round(proc.reduce((s,r)=>s+r.processedDays,0)/proc.length):0, rate: arr.length?Math.round(ok.length/arr.length*100):0, rev: ok.reduce((s,r)=>s+r.fee,0)};
+  });
+}
+
+function buildCharts(data){
+  Object.values(charts).forEach(c=>c&&c.destroy());
+  Chart.defaults.color = getComputedStyle(document.body).getPropertyValue('--text');
+  Chart.defaults.borderColor = getComputedStyle(document.body).getPropertyValue('--border');
+  const colors=['#667eea','#764ba2','#10b981','#f59e0b','#ef4444','#3b82f6','#06b6d4','#a855f7','#ec4899','#84cc16'];
+
+  // Status doughnut
+  const sCounts = {pending:0,approved:0,rejected:0};
+  data.forEach(r=>sCounts[r.status]++);
+  charts.status = new Chart(document.getElementById('chStatus'),{type:'doughnut',data:{labels:[tr('st.pending'),tr('st.approved'),tr('st.rejected')],datasets:[{data:[sCounts.pending,sCounts.approved,sCounts.rejected],backgroundColor:['#f59e0b','#10b981','#ef4444'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}});
+
+  // Over time (group by month over last 12 months)
+  const months=[]; const counts=[];
+  for(let i=11;i>=0;i--){
+    const d=new Date(); d.setMonth(d.getMonth()-i); d.setDate(1);
+    const next=new Date(d); next.setMonth(next.getMonth()+1);
+    months.push(d.toLocaleDateString(LANG==='ar'?'ar-EG':'en',{month:'short'}));
+    counts.push(requests.filter(r=>r.submittedAt>=d.getTime()&&r.submittedAt<next.getTime()).length);
+  }
+  charts.time = new Chart(document.getElementById('chTime'),{type:'line',data:{labels:months,datasets:[{label:tr('k.apps'),data:counts,borderColor:'#667eea',backgroundColor:'rgba(102,126,234,.15)',fill:true,tension:.4,borderWidth:3,pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+
+  // Category bar
+  const catCounts = CATS.filter(c=>c.id!=='all').map(c=>data.filter(r=>r.svcCat===c.id).length);
+  charts.cat = new Chart(document.getElementById('chCat'),{type:'bar',data:{labels:CATS.filter(c=>c.id!=='all').map(c=>catName(c)),datasets:[{data:catCounts,backgroundColor:colors,borderRadius:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+
+  // Revenue trend
+  const revs=[];
+  for(let i=11;i>=0;i--){
+    const d=new Date(); d.setMonth(d.getMonth()-i); d.setDate(1);
+    const next=new Date(d); next.setMonth(next.getMonth()+1);
+    revs.push(requests.filter(r=>r.status==='approved'&&r.submittedAt>=d.getTime()&&r.submittedAt<next.getTime()).reduce((s,r)=>s+r.fee,0));
+  }
+  charts.rev = new Chart(document.getElementById('chRev'),{type:'line',data:{labels:months,datasets:[{label:'EGP',data:revs,borderColor:'#10b981',backgroundColor:'rgba(16,185,129,.18)',fill:true,tension:.4,borderWidth:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+
+  // Top 10 services
+  const svcMap={}; data.forEach(r=>svcMap[r.svcId]=(svcMap[r.svcId]||0)+1);
+  const top10 = Object.entries(svcMap).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  charts.top = new Chart(document.getElementById('chTop'),{type:'bar',data:{labels:top10.map(([id])=>svcName(svcById(+id))),datasets:[{data:top10.map(([,c])=>c),backgroundColor:colors,borderRadius:6}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+
+  // Geo pie
+  const geoMap={}; data.forEach(r=>geoMap[r.userGov]=(geoMap[r.userGov]||0)+1);
+  charts.geo = new Chart(document.getElementById('chGeo'),{type:'pie',data:{labels:Object.keys(geoMap).map(g=>govName(g)),datasets:[{data:Object.values(geoMap),backgroundColor:colors,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right'}}}});
+
+  // Registrations
+  const regs=[];
+  for(let i=11;i>=0;i--){
+    const d=new Date(); d.setMonth(d.getMonth()-i); d.setDate(1);
+    const next=new Date(d); next.setMonth(next.getMonth()+1);
+    regs.push(users.filter(u=>u.createdAt>=d.getTime()&&u.createdAt<next.getTime()).length);
+  }
+  charts.reg = new Chart(document.getElementById('chReg'),{type:'line',data:{labels:months,datasets:[{label:tr('k.users'),data:regs,borderColor:'#764ba2',backgroundColor:'rgba(118,75,162,.15)',fill:true,tension:.4,borderWidth:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+}
+
+function renderInsights(data){
+  const svcMap={}; data.forEach(r=>svcMap[r.svcId]=(svcMap[r.svcId]||0)+1);
+  const top = Object.entries(svcMap).sort((a,b)=>b[1]-a[1])[0];
+  const topName = top ? svcName(svcById(+top[0])) : '—';
+  const geoMap={}; data.forEach(r=>geoMap[r.userGov]=(geoMap[r.userGov]||0)+1);
+  const topGov = Object.entries(geoMap).sort((a,b)=>b[1]-a[1])[0];
+  const govPct = topGov && data.length ? Math.round(topGov[1]/data.length*100) : 0;
+  const rev30 = requests.filter(r=>r.status==='approved'&&(Date.now()-r.submittedAt)<30*24*60*60*1000).reduce((s,r)=>s+r.fee,0);
+  const approved = data.filter(r=>r.status==='approved').length;
+  const rate = data.length ? Math.round(approved/data.length*100) : 0;
+  const ins = LANG==='ar' ? [
+    `<strong>${topName}</strong> هي الخدمة الأكثر طلباً في هذه الفترة.`,
+    `نسبة الموافقة الحالية تبلغ <strong>${rate}%</strong>.`,
+    `<strong>${govName(topGov?.[0]||'')}</strong> تمثل <strong>${govPct}%</strong> من إجمالي الطلبات.`,
+    `بلغت الإيرادات <strong>${rev30.toLocaleString()} ج.م</strong> خلال آخر 30 يوماً.`
+  ] : [
+    `<strong>${topName}</strong> is the most requested service in this period.`,
+    `Current approval rate is <strong>${rate}%</strong> across all submissions.`,
+    `<strong>${topGov?.[0]||''}</strong> accounts for <strong>${govPct}%</strong> of all submissions.`,
+    `Revenue reached <strong>EGP ${rev30.toLocaleString()}</strong> in the last 30 days.`
+  ];
+  document.getElementById('insights').innerHTML = ins.map(t=>`<div class="insight"><i class="fas fa-wand-magic-sparkles"></i><div>${t}</div></div>`).join('');
+}
+
+window.setReq=(id,st)=>{
+  const r=requests.find(x=>x.id===id);
+  if(r){r.status=st; r.processedDays = rand(1,7); saveAll(); renderDashboard(); toast(tr('msg.req_status')+' '+tr('st.'+st),'success');}
+};
+
+function renderUser(body){
+  const mine = requests.filter(r=>r.userId===current.id);
+  body.innerHTML = `
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="feature-card">
+          <h4 class="fw-bold mb-3"><i class="fas fa-plus-circle me-2" style="color:var(--primary)"></i>${tr('btn.new')}</h4>
+          <select class="form-select mb-3" id="newSvc"><option value="">${tr('btn.select')}</option>${SERVICES.map(s=>`<option value="${s.id}">${svcName(s)} ${s.fee?'('+s.fee+' EGP)':'(Free)'}</option>`).join('')}</select>
+          <button class="btn btn-grad w-100 ripple" onclick="quickRequest()"><i class="fas fa-paper-plane me-2"></i>${tr('btn.submit')}</button>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="feature-card">
+          <h4 class="fw-bold mb-3"><i class="fas fa-folder-open me-2" style="color:var(--primary)"></i>${tr('btn.myreqs')}</h4>
+          <div class="table-responsive"><table class="table align-middle"><thead><tr><th>${tr('rcp.id')}</th><th>${tr('tb.svc')}</th><th>${tr('rcp.status')}</th><th>${tr('rcp.date')}</th><th></th></tr></thead><tbody>
+          ${mine.length?mine.map(r=>{const s=svcById(r.svcId);return `<tr><td><code class="small">${r.id}</code></td><td>${svcName(s)}</td><td><span class="status-badge status-${r.status}">${tr('st.'+r.status)}</span></td><td>${fmtDate(r.submittedAt)}</td><td><button class="btn btn-sm btn-outline-primary" onclick="navTo('track');setTimeout(()=>{document.getElementById('trackInput').value='${r.id}';doTrack();},200)"><i class="fas fa-eye"></i></button></td></tr>`}).join(''):`<tr><td colspan="5" class="text-center py-4 text-muted">${tr('msg.no_reqs')}</td></tr>`}
+          </tbody></table></div>
+        </div>
+      </div>
+    </div>`;
+}
+window.quickRequest=()=>{
+  const v=document.getElementById('newSvc').value;
+  if(!v){toast(tr('msg.req_pick'),'warning');return;}
+  const s=svcById(+v);
+  const r = {id:uid(),userId:current.id,userName:current.name,userGov:current.gov||'Cairo',svcId:s.id,svcCat:s.cat,status:'pending',submittedAt:Date.now(),processedDays:null,fee:s.fee,files:0};
+  requests.unshift(r);saveAll();
+  showReceipt(r);
+  confetti({particleCount:120,spread:80,origin:{y:.6}});
+};
+
+/* ============ EXPORTS ============ */
+async function exportPDF(){
+  const body = document.getElementById('dashBody');
+  const canvas = await html2canvas(body, {backgroundColor: getComputedStyle(document.body).getPropertyValue('--bg'), scale:1.2});
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({unit:'mm',format:'a4',orientation:'p'});
+  const w = 200, h = canvas.height * w / canvas.width;
+  let y = 10;
+  if(h <= 280){ pdf.addImage(canvas.toDataURL('image/png'),'PNG',5,y,w,h); }
+  else {
+    // simple paginated
+    const pageH = 280;
+    const ratio = canvas.width / w;
+    const sliceH = pageH * ratio;
+    let s = 0;
+    while(s < canvas.height){
+      const c = document.createElement('canvas');
+      c.width = canvas.width; c.height = Math.min(sliceH, canvas.height - s);
+      c.getContext('2d').drawImage(canvas, 0, s, canvas.width, c.height, 0, 0, canvas.width, c.height);
+      pdf.addImage(c.toDataURL('image/png'),'PNG',5,10,w, c.height/ratio);
+      s += sliceH; if(s < canvas.height) pdf.addPage();
+    }
+  }
+  pdf.save('eportal-dashboard.pdf');
+}
+function exportXLSX(){
+  const data = filterRequests();
+  const rows = data.map(r=>{const s=svcById(r.svcId);return {ID:r.id,User:r.userName,NationalID:r.userId,Service:svcName(s),Category:s.cat,Governorate:r.userGov,Status:r.status,Date:fmtDate(r.submittedAt),Fee:r.fee,Files:r.files};});
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), 'Applications');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(users.map(u=>({ID:u.id,Name:u.name,Email:u.email,Phone:u.phone,Role:u.role,Gov:u.gov}))), 'Users');
+  XLSX.writeFile(wb, 'eportal-export.xlsx');
+}
+
+/* ============ CONTACT ============ */
+document.getElementById('contactForm').onsubmit=e=>{e.preventDefault();e.target.reset();toast(tr('msg.contact'),'success');};
+
+/* ============ EFFECTS ============ */
+const cur=document.getElementById('cursor');
+window.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';});
+document.addEventListener('mouseover',e=>{if(e.target.closest('a,button,.service-card,.chip,.feature-card,.stat-card,.pill'))cur.classList.add('hover');else cur.classList.remove('hover');});
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;const p=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;
+  document.getElementById('scrollProgress').style.width=p+'%';
+  document.getElementById('scrollTop').classList.toggle('show',h.scrollTop>300);
+});
+document.getElementById('scrollTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
+document.addEventListener('click',e=>{const b=e.target.closest('.ripple');if(!b)return;const r=document.createElement('span');r.className='r';const d=Math.max(b.offsetWidth,b.offsetHeight);r.style.width=r.style.height=d+'px';const rect=b.getBoundingClientRect();r.style.left=(e.clientX-rect.left-d/2)+'px';r.style.top=(e.clientY-rect.top-d/2)+'px';b.appendChild(r);setTimeout(()=>r.remove(),600);});
+let counted=false;
+function animCounters(){
+  if(counted)return;
+  const stats=document.getElementById('statsRow');if(!stats)return;
+  const r=stats.getBoundingClientRect();
+  if(r.top>window.innerHeight||r.bottom<0)return;
+  counted=true;
+  document.querySelectorAll('.counter').forEach(el=>{
+    const t=+el.dataset.target,suf=el.dataset.suffix||'',dur=1600,start=performance.now();
+    function step(now){const p=Math.min((now-start)/dur,1);const v=Math.floor(t*(1-Math.pow(1-p,3)));el.textContent=(v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?(v/1000).toFixed(0)+'K':v)+suf;if(p<1)requestAnimationFrame(step);else el.textContent=(t>=1000000?(t/1000000).toFixed(0)+'M':t>=1000?(t/1000).toFixed(0)+'K':t)+suf;}
+    requestAnimationFrame(step);
+  });
+}
+window.addEventListener('scroll',animCounters);
+
+/* DARK MODE */
+const darkBtn = document.getElementById('darkBtn');
+function applyTheme(){ const dark = localStorage.getItem('ep_dark')==='1'; document.body.classList.toggle('dark', dark); darkBtn.innerHTML = dark?'<i class="fas fa-sun"></i>':'<i class="fas fa-moon"></i>'; }
+darkBtn.onclick = ()=>{ localStorage.setItem('ep_dark', localStorage.getItem('ep_dark')==='1'?'0':'1'); applyTheme(); if(document.querySelector('[data-page="dashboard"]').classList.contains('active')) renderDashboard(); };
+applyTheme();
+
+/* INIT */
+window.addEventListener('load',()=>{
+  setTimeout(()=>{document.getElementById('preloader').classList.add('hide');setTimeout(()=>document.getElementById('preloader').remove(),500);animCounters();},1200);
+  // deep-link tracking
+  if(location.hash.startsWith('#track=')) navTo('track');
+});
+applyLang();
+refreshAuthUI();
+renderServices();
+</script>
+</body>
+</html>
